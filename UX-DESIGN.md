@@ -2,4 +2,4 @@
 
 ## App Map
 
-![App Map](./ux-design/article-bias-appmap.png)
+![App Map](./ux-design/unincited-app-map.png)
