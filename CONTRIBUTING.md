@@ -55,7 +55,7 @@ We follow a structured Git workflow to maintain stability and code quality.
 ## Branching Strategy
 
 - `main` branch is always stable and deployable.
-- All new wokr must occur in a feature branch.
+- All new work must occur in a feature branch.
 
 No direct commits to `main`.
 
@@ -104,6 +104,6 @@ A User Story is complete when:
 - The feature is tested.
 - The branch is merged into `main`.
 
-# Setting pu the Local Development Environment
+# Setting up the Local Development Environment
 
 To be done in later Sprints.
