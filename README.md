@@ -5,19 +5,31 @@
 
 The News Bias Comparison App is a mobile web application that analyzes political news articles to identify bias in the language and wording used.
 
-The system evaluates word choice, phrases, and patterns of text content to generate a score of biasedness and range from left-leaning to right-leaning. Analyzed articles are displayed on a chart to visualize different news sources and articles for comparison.
+The system evaluates word choice, phrases, and patterns of text content to generate a score of biasedness and range from left-leaning to right-leaning. Analyzed articles are displayed on a chart to visualize different news sources and articles for comparison. 
 
-Users can view recently ranked articles and individual rankings to understand a detailed explanation for its result. They can also submit new articles for review and save articles of interest for further analysis. 
+
+
+## Product Vision Statement
 
 The goal of this app is to provide interpretable insights into how language influences perceived political bias.
 
-## Project Instructions
+Users will be able to create an account, submit an article for analysis, view recently ranked articles, see a visual bias chart, and open an article to understand why it received its score. Users will also be able to save articles for later.
 
-Several sets of instructions are included in this repository. They should each be treated as separate assignments with their own due dates and sets of requirements.
+## Core Team Members
 
-1. See the [App Map & Wireframes](instructions-0a-app-map-wireframes.md) and [Prototyping](./instructions-0b-prototyping.md) instructions for the requirements of the initial user experience design of the app.
+| Member              | GitHub Account                  |
+|---------------------|----------------------------------|
+| Mumu Li             | [@n3xta](https://github.com/n3xta) |
+| Andy Liu            | [@andy8259](https://github.com/andy8259)|
+| Dana Pantoja-Campa  | [@danapantoja](https://github.com/danapantoja) |
+| Uma Patel           |  [@umapaterl5](https://github.com/umapatel5)|
+| Kevin Pham          | [@knp4830](https://github.com/knp4830) |
 
-1. Delete the contents of this file and replace with the contents of a proper README.md, as described in the [project setup instructions](./instructions-0c-project-setup.md)
+## Building and Testing
+
+
+
+## Other Documentation
 
 1. See the [Sprint Planning instructions](instructions-0d-sprint-planning.md) for the requirements of Sprint Planning for each Sprint.
 
