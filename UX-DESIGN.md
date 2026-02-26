@@ -29,15 +29,61 @@ To ensure clarity and consistency across our prototypes, please note the followi
   - Components within the article view (specifically sliders, chips, and text highlights) reflect our design direction.
   - The visual styling for other components, most notably the statistical charts, remains raw.
 
-### Wireframe Files
+### Login
+<img align="left" width="200" hspace="20" src="ux-design/login.png">
 
-| Screen Name    | Wireframe Screenshot                                  | Prototype Variations                                                                                                | Functionality & UX Notes                                                                                                                                                                                                  |
-| :------------- | :---------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Login          | ![alt text](ux-design/login.png)                      |                                                                                                                     | Accepts email and password to log in. Features a "Login" button routing to the Dashboard and a link to the Register screen. Login with google and apple is also considered in our user stories.                           |
-| Register       | ![alt text](ux-design/register.png)                   |                                                                                                                     | Captures name, email, and password. The "Create Account" button navigates to the Dashboard. Includes a login link for existing users.                                                                                     |
-| Home           | ![alt text](<ux-design/Home Page.png>)                |                                                                                                                     | Features a scrollable list of article cards showing key details (image, source, headline, badges). Tapping a card opens the Article Detail view.                                                                          |
-| Article Detail | ![alt text](<ux-design/Article Details.png>)          |                                                                                                                     | Displays full text alongside visual bias and sentiment meters. Includes source, author, date, "add to saved" star icon, and a back button to return to the previous screen.<br>Highlighted text indicates biased writing. |
-| Statistics     | ![alt text](<ux-design/Stats Page.png>)               |                                                                                                                     | Contains data visualizations such as a bias distribution bar chart, a sentiment trend line graph, and a quick stats grid.<br>Users can also select the statistic time range from the upper right dropdown menu.           |
-| My Articles    | ![alt text](<ux-design/My Page.png>)                  | ![alt text](<ux-design/prototype/My Page (Submitted).png>)   ![alt text](<ux-design/prototype/My Page (Saved).png>) | Uses tab navigation to switch between "Submitted" and "Saved" lists. Includes a "+ Submit" button for new analysis requests.                                                                                              |
-| Submit Article | ![alt text](<ux-design/My Page (Submit Process).png>) | ![alt text](<ux-design/prototype/My Page (Submit Success).png>)                                                     | Contains fields for the URL and an optional title. The "Analyze Article" button triggers a submitted success state.                                                                                                       |
-| About          | ![alt text](<ux-design/About Page.png>)               |                                                                                                                     | Divided into sections explaining the app's purpose and how it works.                                                                                                                                                      |
+Accepts email and password to log in. Features a "Login" button routing to the Dashboard and a link to the Register screen. Login with google and apple is also considered in our user stories.
+
+<br clear="left"/>
+
+### Register
+<img align="left" width="200" hspace="20" src="ux-design/register.png">
+
+Captures name, email, and password. The "Create Account" button navigates to the Dashboard. Includes a login link for existing users.
+
+<br clear="left"/>
+
+### Home
+<img align="left" width="200" hspace="20" src="ux-design/Home Page.png">
+
+Features a scrollable list of article cards showing key details (image, source, headline, badges). Tapping a card opens the Article Detail view.
+
+<br clear="left"/>
+
+### Article Detail
+<img align="left" width="200" hspace="20" src="ux-design/Article Details.png">
+
+Displays full text alongside visual bias and sentiment meters. Includes source, author, date, "add to saved" star icon, and a back button to return to the previous screen.<br><br>Highlighted text indicates biased writing.
+
+<br clear="left"/>
+
+### Statistics
+<img align="left" width="200" hspace="20" src="ux-design/Stats Page.png">
+
+Contains data visualizations such as a bias distribution bar chart, a sentiment trend line graph, and a quick stats grid.<br><br>Users can also select the statistic time range from the upper right dropdown menu.
+
+<br clear="left"/>
+
+### My Articles
+<img align="left" width="200" hspace="20" src="ux-design/My Page.png">
+<img align="left" width="200" hspace="20" src="ux-design/prototype/My Page (Submitted).png">
+<img align="left" width="200" hspace="20" src="ux-design/prototype/My Page (Saved).png">
+
+Uses tab navigation to switch between "Submitted" and "Saved" lists. Includes a "+ Submit" button for new analysis requests.
+
+<br clear="left"/>
+
+### Submit Article
+<img align="left" width="200" hspace="20" src="ux-design/My Page (Submit Process).png">
+<img align="left" width="200" hspace="20" src="ux-design/prototype/My Page (Submit Success).png">
+
+Contains fields for the URL and an optional title. The "Analyze Article" button triggers a submitted success state.
+
+<br clear="left"/>
+
+### About
+<img align="left" width="200" hspace="20" src="ux-design/About Page.png">
+
+Divided into sections explaining the app's purpose and how it works.
+
+<br clear="left"/>
