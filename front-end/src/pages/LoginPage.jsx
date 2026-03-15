@@ -1,7 +1,7 @@
 
 
 function LoginPage() {
-  return <div style={{ color: 'white', fontSize: '40px' }}>Login Page</div>
+  return <h1>Login Page</h1>
 }
 
 export default LoginPage
