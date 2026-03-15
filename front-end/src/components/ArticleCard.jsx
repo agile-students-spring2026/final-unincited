@@ -28,3 +28,4 @@ function ArticleCard({ source, title, summary, date, sentiment, bias }) {
     </div>
   );
 }
+export default ArticleCard
