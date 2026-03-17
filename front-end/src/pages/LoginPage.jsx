@@ -1,7 +1,7 @@
-
+import Login from "../Login";
 
 function LoginPage() {
-  return <h1>Login Page</h1>
+  return <Login />;
 }
 
-export default LoginPage
+export default LoginPage;
