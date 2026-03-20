@@ -20,7 +20,8 @@ function AppLayout() {
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/analytics" element={<AnalyticsPage />} />
         <Route path="/about" element={<AboutPage />} />
-        <Route path="/your-articles" element={<YourArticlesPage />} />
+        <Route path="/my-articles" element={<YourArticlesPage />} />
+        
       </Routes>
 
       {!hideNav && <Nav />}
