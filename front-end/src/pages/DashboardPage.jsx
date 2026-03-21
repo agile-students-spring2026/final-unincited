@@ -6,7 +6,9 @@ import ArticleCard from "../components/ArticleCard";
 function DashboardPage() {
 
   const [searchTerm, setSearchTerm] = useState("");
-
+  
+  //need to inject mock data for article list
+  //then filter using searchterm
   
   return <div className="dashboard-page">
       <div className="dashboard-title">Recent Articles</div>

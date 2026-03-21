@@ -21,7 +21,7 @@ function AppLayout() {
         <Route path="/analytics" element={<AnalyticsPage />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/my-articles" element={<YourArticlesPage />} />
-        
+      
       </Routes>
 
       {!hideNav && <Nav />}

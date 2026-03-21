@@ -17,6 +17,7 @@ function ArticleCard({ id, source, title, summary, date, sentiment, bias, thumbn
         
     <div className="article-card" onClick={handleClick}>
       <img className="article-thumbnail" src={thumbnail} alt={title} />
+      
       <div className="article-content">
         <div className="article-meta">
           <span className="source">{source}</span>
