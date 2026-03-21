@@ -2,7 +2,6 @@ import { useState } from "react";
 import './DashboardPage.css'
 import ArticleCard from "../components/ArticleCard";
 
-//need to inject mock data for article list
 function DashboardPage() {
 
   const [searchTerm, setSearchTerm] = useState("");
