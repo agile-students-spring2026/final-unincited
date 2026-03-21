@@ -12,8 +12,8 @@ function Nav() {
         Analytics
       </NavLink>
 
-      <NavLink to="/your-articles" className="nav-item">
-        Your Articles
+      <NavLink to="/my-articles" className="nav-item">
+        My Articles
       </NavLink>
 
       <NavLink to="/about" className="nav-item">
