@@ -39,6 +39,7 @@ function DashboardPage() {
               sentiment={article.analysis.sentiment.label}
               bias={article.analysis.bias.label}
               thumbnail={article.coverImageUrl}
+              isBookmarked={article.isBookmarked}
             />
             }
             

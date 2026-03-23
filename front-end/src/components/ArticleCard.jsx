@@ -4,9 +4,9 @@ import { useNavigate } from "react-router-dom";
 import './ArticleCard.css'
 
 
-function ArticleCard({ id, source, title, summary, date, sentiment, bias, thumbnail}) {
+function ArticleCard({ id, source, title, summary, date, sentiment, bias, thumbnail, isBookmarked}) {
 
-  const [saved, setSaved] = useState(false);
+  const [saved, setSaved] = useState(isBookmarked);
   const navigate = useNavigate();
 
   const handleClick = () => {
