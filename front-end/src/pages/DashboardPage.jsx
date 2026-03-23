@@ -28,7 +28,7 @@ function DashboardPage() {
       <div className="articles-list">
           
           {mockArticles.map((article) => {
-            if (article.title.includes(searchTerm)){
+            if (article.title.toLowerCase().includes(searchTerm.toLowerCase())){
               return <ArticleCard
               key={article.id}
               id={article.id}
