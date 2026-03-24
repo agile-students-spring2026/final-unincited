@@ -1,20 +1,19 @@
 
 .dashboard-page {
   min-height: 100vh;
-  max-width: 420px;
-  margin: 0 auto; 
-  padding: 20px 16px 90px; /* bottom padding to avoid covering nav*/
+  padding: 18px 16px 92px;
   box-sizing: border-box;
 }
+
 .dashboard-title {
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: #111827;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-main);
 }
 
 .dashboard-subtitle {
-  font-size: 0.95rem;
-  color: #6b7280;
+  font-size: 0.92rem;
+  color: var(--text-muted);
   margin-bottom: 18px;
 }
 
@@ -24,14 +23,21 @@
 
 .dashboard-search {
   width: 100%;
-  padding: 12px 14px;
-  border-radius: 16px;
-  border: 1px solid #d1d5db;
-  background-color: white;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  background-color: var(--bg-surface);
   font-size: 0.95rem;
   outline: none;
-  transition: all 0.2s ease;
+  color: var(--text-main);
   box-sizing: border-box;
+}
+
+.dashboard-search::placeholder {
+  color: var(--text-muted);
+}
+
+.dashboard-search:focus {
+  border-color: var(--line-strong);
 }
 
 .articles-list {

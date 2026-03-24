@@ -1,4 +1,36 @@
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  --font-serif: Georgia, "Times New Roman", serif;
+  --bg-page: #f2f2ee;
+  --bg-surface: #ffffff;
+  --bg-muted: #ecece6;
+  --text-main: #181818;
+  --text-muted: #64645f;
+  --line: #c9c9c1;
+  --line-strong: #989890;
+  --black: #111111;
+  --white: #ffffff;
   line-height: 1.5;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg-page);
+  color: var(--text-main);
+  font-family: var(--font-serif);
+}
+
+button,
+input,
+textarea {
+  font-family: inherit;
 }

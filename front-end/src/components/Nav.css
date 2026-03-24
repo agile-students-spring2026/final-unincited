@@ -1,27 +1,36 @@
 .bottom-nav {
   position: fixed;
   bottom: 0;
-  width: min(420px, 100%);
+  left: 0;
+  right: 0;
+  width: 100%;
   display: flex;
   justify-content: space-around;
   align-items: center;
-  background: white;
-  border-top: 1px solid #ddd;
-  padding: 12px 0;
+  background: var(--bg-surface);
+  border-top: 1px solid var(--line);
+  padding: 10px 0;
+  z-index: 50;
 }
 
 .nav-item {
   text-decoration: none;
-  color: #666;
-  font-size: 14px;
-  font-weight: 500;
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 400;
 }
+
 .icon {
   width: 24px;
   height: 24px;
-
+  display: block;
+  filter: grayscale(1) contrast(0.8);
 }
 
 .nav-item.active {
-  color: #4F46E5;
+  color: var(--text-main);
+}
+
+.nav-item.active .icon {
+  filter: grayscale(0) contrast(1);
 }
