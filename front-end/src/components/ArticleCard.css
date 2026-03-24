@@ -124,3 +124,12 @@
   background-color: #fef3c7;
   color: #d97706;
 }
+
+/* pending status badge */
+.tag.pending {
+  background-color: #f3f4f6;
+  color: #6b7280;
+  border-radius: 4px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
