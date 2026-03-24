@@ -1,7 +1,6 @@
 .article-page {
-  padding: 20px;
-  max-width: 600px;
-  margin: 0 auto;
+  padding: 16px;
+  min-height: calc(100vh - 72px);
 }
 
 .back-button {
@@ -26,9 +25,8 @@
 
 .article-image {
   width: 100%;
-  height: 250px;
+  height: 220px;
   background-color: #e0e0e0;
-  border-radius: 4px;
   object-fit: cover;
 }
 
@@ -87,25 +85,57 @@
   gap: 12px;
   background-color: #f5f5f5;
   padding: 16px;
-  border-radius: 4px;
 }
 
 .analysis-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.analysis-row-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
 .analysis-label {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   color: #333;
 }
 
 .analysis-value {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 700;
   color: #333;
+}
+
+.analysis-slider {
+  position: relative;
+  width: 100%;
+  height: 14px;
+}
+
+.analysis-track {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: #d4d4d4;
+  transform: translateY(-50%);
+}
+
+.analysis-marker {
+  position: absolute;
+  top: 50%;
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 8px solid #a8a8a8;
+  transform: translate(-50%, -70%);
 }
 
 .article-content {
@@ -118,28 +148,33 @@
   margin: 0;
 }
 
+.article-loading,
+.article-error {
+  font-size: 16px;
+  color: #333;
+}
+
 /* Highlight colors for bias indicators */
 .highlight {
-  padding: 2px 4px;
-  border-radius: 2px;
+  padding: 1px 3px;
 }
 
-.highlight.bias-left {
-  background-color: #c8e6f5;
+.highlight-tone-0 {
+  background-color: #f6d5d5;
 }
 
-.highlight.bias-center-left {
-  background-color: #d4f1e6;
+.highlight-tone-1 {
+  background-color: #f8ecc9;
 }
 
-.highlight.bias-center {
-  background-color: #fff3cd;
+.highlight-tone-2 {
+  background-color: #d8efdd;
 }
 
-.highlight.bias-center-right {
-  background-color: #ffd4d4;
+.highlight-tone-3 {
+  background-color: #d6e8f8;
 }
 
-.highlight.bias-right {
-  background-color: #ffb3b3;
+.highlight-tone-4 {
+  background-color: #eadcf7;
 }
