@@ -3,7 +3,7 @@
   display: flex;
   align-items: flex-start;
   background-color: var(--bg-surface);
-  padding: 34px 16px 92px;
+  padding: 42px 16px 92px;
 }
 
 .login-box {
@@ -11,6 +11,8 @@
   flex-direction: column;
   gap: 10px;
   width: 100%;
+  border-top: 2px solid var(--accent);
+  padding-top: 16px;
 }
 
 .login-input {
@@ -23,8 +25,8 @@
 
 .login-button {
   padding: 11px 14px;
-  border: 1px solid var(--black);
-  background-color: var(--black);
+  border: 1px solid var(--accent);
+  background-color: var(--accent);
   color: var(--white);
   font-size: 12px;
   letter-spacing: 0.04em;
@@ -32,7 +34,7 @@
 }
 
 .login-button:hover {
-  background-color: #2b2b2b;
+  background-color: var(--accent-deep);
 }
 
 .login-input::placeholder {
@@ -42,7 +44,7 @@
 
 .forgot-password {
   font-size: 11px;
-  color: var(--text-main);
+  color: var(--accent-deep);
   text-align: right;
   cursor: pointer;
   margin-top: -4px;
@@ -52,7 +54,7 @@
 }
 
 .forgot-password:hover {
-  color: var(--text-muted);
+  color: var(--accent);
 }
 
 .signup-text {
@@ -63,14 +65,14 @@
 }
 
 .signup-link {
-  color: var(--text-main);
+  color: var(--accent-deep);
   cursor: pointer;
   text-decoration: underline;
   padding-left: 5px;
 }
 
 .signup-link:hover {
-  color: var(--text-muted);
+  color: var(--accent);
 }
 
 .social-section {

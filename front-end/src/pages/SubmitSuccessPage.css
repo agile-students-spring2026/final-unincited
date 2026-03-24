@@ -1,31 +1,32 @@
 .success-page {
   min-height: 100vh;
-    padding: 18px 16px 92px;
+  padding: 20px 16px 92px;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-    gap: 16px;
+  gap: 16px;
 }
 
-.back-button {
-    align-self: flex-start;
-    background: none;
-    border: none;
-    color: var(--text-main);
-    font-size: 1.5rem;
-    cursor: pointer;
-    margin-bottom: 8px;
+.success-page .back-button {
+  align-self: flex-start;
+  background: none;
+  border: none;
+  color: var(--text-main);
+  font-size: 1.5rem;
+  cursor: pointer;
+  margin-bottom: 8px;
 }
 
 .success-card {
-    margin-top: 8px;
-    display: flex;
-    flex-direction: column;
-    padding: 34px 20px;
-    text-align: center;
-    border: 1px solid var(--line);
-    align-items: center;
-    background: var(--bg-surface);
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  padding: 34px 20px;
+  text-align: center;
+  border: 1px solid var(--line);
+  border-top: 2px solid var(--accent);
+  align-items: center;
+  background: var(--bg-surface);
 }
 
 .success-image {
@@ -34,21 +35,21 @@
 }
 
 .success-title {
-    font-weight: 700;
-    font-size: 1.7rem;
+  font-weight: 700;
+  font-size: 1.9rem;
 }
 
 .success-subtitle {
-    font-size: 0.84rem;
-    color: var(--text-muted);
+  font-size: 0.84rem;
+  color: var(--text-muted);
 }
 
 .articles-button {
-    color: var(--white);
-    background: var(--black);
-    border: 1px solid var(--black);
-    padding: 11px 14px;
-    font-size: 0.75rem;
-    letter-spacing: 0.04em;
-    cursor: pointer;
+  color: var(--white);
+  background: var(--accent);
+  border: 1px solid var(--accent);
+  padding: 11px 14px;
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  cursor: pointer;
 }

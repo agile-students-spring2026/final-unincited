@@ -1,19 +1,22 @@
 
 .dashboard-page {
   min-height: 100vh;
-  padding: 18px 16px 92px;
+  padding: 20px 16px 92px;
   box-sizing: border-box;
 }
 
 .dashboard-title {
-  font-size: 2rem;
+  font-size: 2.2rem;
   font-weight: 700;
   color: var(--text-main);
+  letter-spacing: -0.01em;
 }
 
 .dashboard-subtitle {
-  font-size: 0.92rem;
+  font-size: 0.88rem;
   color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
   margin-bottom: 18px;
 }
 
@@ -25,7 +28,8 @@
   width: 100%;
   padding: 10px 12px;
   border: 1px solid var(--line);
-  background-color: var(--bg-surface);
+  border-top: 2px solid var(--accent);
+  background-color: #f8efdd;
   font-size: 0.95rem;
   outline: none;
   color: var(--text-main);
@@ -37,7 +41,7 @@
 }
 
 .dashboard-search:focus {
-  border-color: var(--line-strong);
+  border-color: var(--accent);
 }
 
 .articles-list {

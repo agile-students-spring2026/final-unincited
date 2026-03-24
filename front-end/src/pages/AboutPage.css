@@ -1,20 +1,23 @@
 .about-page {
   min-height: 100vh;
-  padding: 18px 16px 92px;
+  padding: 20px 16px 92px;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
 }
 
 .about-title {
-  font-size: 2rem;
+  font-size: 2.2rem;
   font-weight: 700;
   color: var(--text-main);
+  letter-spacing: -0.01em;
 }
 
 .about-subtitle {
-  font-size: 0.92rem;
+  font-size: 0.88rem;
   color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
   margin-bottom: 18px;
 }
 
@@ -27,6 +30,7 @@
 .about-methodology {
   margin-bottom: 20px;
   border: 1px solid var(--line);
+  border-top: 2px solid var(--accent);
   padding: 12px;
   background-color: var(--bg-surface);
 }
@@ -46,8 +50,8 @@
 
 .logout-button {
   color: var(--white);
-  background: var(--black);
-  border: 1px solid var(--black);
+  background: var(--accent);
+  border: 1px solid var(--accent);
   padding: 11px 14px;
   margin-top: auto;
   font-size: 0.75rem;

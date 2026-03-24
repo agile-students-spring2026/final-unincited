@@ -7,18 +7,29 @@
 }
 
 .article-card:hover {
-  background-color: #fcfcfa;
+  background-color: #f7efde;
+}
+
+.article-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--accent);
 }
 
 .article-thumbnail {
   width: 100%;
-  height: 140px;
+  height: 160px;
   background-color: #d7d7d1;
   object-fit: cover;
+  border-bottom: 1px solid var(--line);
 }
 
 .article-content {
-  padding: 10px;
+  padding: 12px;
 }
 
 .article-meta {
@@ -30,9 +41,9 @@
 }
 
 .source {
-  font-weight: 400;
+  font-weight: 700;
   letter-spacing: 0.04em;
-  color: var(--text-muted);
+  color: var(--accent);
   text-transform: uppercase;
 }
 
@@ -45,22 +56,22 @@
 }
 
 .save-button.saved {
-  color: var(--text-main);
+  color: var(--accent);
 }
 
 .article-title {
-  font-size: 1.6rem;
+  font-size: 1.75rem;
   font-weight: 700;
   color: var(--text-main);
-  margin-bottom: 8px;
+  margin-bottom: 6px;
   line-height: 1.18;
 }
 
 .article-summary {
-  font-size: 0.95rem;
+  font-size: 0.93rem;
   color: var(--text-main);
-  margin-bottom: 12px;
-  line-height: 1.5;
+  margin-bottom: 10px;
+  line-height: 1.45;
 }
 
 .article-footer {
@@ -81,45 +92,47 @@
 
 .tag {
   font-size: 0.7rem;
-  padding: 3px 8px;
+  padding: 2px 7px;
   border: 1px solid var(--line);
   font-weight: 400;
   text-transform: uppercase;
   letter-spacing: 0.04em;
   color: var(--text-main);
-  background: var(--bg-surface);
+  background: #f7efde;
 }
 
 .sentiment.positive {
-  background-color: #eff3eb;
+  background-color: #f1e4db;
+  border-color: var(--accent-soft);
 }
 
 .sentiment.neutral {
-  background-color: #efefeb;
+  background-color: #f0e9da;
 }
 
 .sentiment.negative {
-  background-color: #f4eceb;
+  background-color: #ecd7d2;
+  border-color: var(--accent-soft);
 }
 
 .bias.left {
-  background-color: #ebf0f4;
+  background-color: #ece6db;
 }
 
 .bias.center-left {
-  background-color: #edf1f2;
+  background-color: #eee8dc;
 }
 
 .bias.center {
-  background-color: #efefeb;
+  background-color: #f0e9da;
 }
 
 .bias.center-right {
-  background-color: #f2f0eb;
+  background-color: #efe3d7;
 }
 
 .bias.right {
-  background-color: #f3ece9;
+  background-color: #eddcd6;
 }
 
 .tag.pending {

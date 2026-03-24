@@ -8,12 +8,14 @@
   justify-content: space-around;
   align-items: center;
   background: var(--bg-surface);
-  border-top: 1px solid var(--line);
-  padding: 10px 0;
+  border-top: 1px solid var(--line-strong);
+  padding: 8px 0;
   z-index: 50;
 }
 
 .nav-item {
+  position: relative;
+  padding: 7px 12px;
   text-decoration: none;
   color: var(--text-muted);
   font-size: 13px;
@@ -24,13 +26,24 @@
   width: 24px;
   height: 24px;
   display: block;
-  filter: grayscale(1) contrast(0.8);
+  filter: grayscale(1) contrast(0.75);
 }
 
 .nav-item.active {
-  color: var(--text-main);
+  color: var(--accent);
 }
 
 .nav-item.active .icon {
   filter: grayscale(0) contrast(1);
+}
+
+.nav-item.active::after {
+  content: "";
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  width: 22px;
+  height: 2px;
+  transform: translateX(-50%);
+  background: var(--accent);
 }

@@ -1,14 +1,17 @@
 :root {
   --font-serif: Georgia, "Times New Roman", serif;
-  --bg-page: #f2f2ee;
-  --bg-surface: #ffffff;
-  --bg-muted: #ecece6;
-  --text-main: #181818;
-  --text-muted: #64645f;
-  --line: #c9c9c1;
-  --line-strong: #989890;
-  --black: #111111;
-  --white: #ffffff;
+  --bg-page: #c00d1f;
+  --bg-surface: #f5ecda;
+  --bg-muted: #ede3d0;
+  --text-main: #171515;
+  --text-muted: #6c625a;
+  --line: #b7a999;
+  --line-strong: #877a6e;
+  --black: #141313;
+  --white: #fffaf1;
+  --accent: #c00d1f;
+  --accent-soft: #e9c9be;
+  --accent-deep: #8f0a17;
   line-height: 1.5;
 }
 
