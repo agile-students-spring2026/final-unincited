@@ -23,7 +23,7 @@ export default function SubmitArticlePage(){
 
     }
     return <div className="submit-page">
-        <button className="back-button" onClick={() => navigate('/my-articles')}> &#8656; Back</button>
+        <button className="back-button" onClick={() => navigate('/my-articles')}> ◀ Back</button>
         
         <div className="submit-title">Submit an Article</div>
         <div className="submit-subtitle">Get bias and sentiment analysis</div>

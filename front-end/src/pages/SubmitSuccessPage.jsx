@@ -8,7 +8,7 @@ export default function SubmitSucessPage (){
 
     const title = location.state?.title || 'Untitled Article'
     return <div className="success-page">
-        <button className="back-button" onClick={() => navigate('/submit')}> &#8656; Back</button>
+        <button className="back-button" onClick={() => navigate('/submit')}> ◀ Back</button>
 
         <div className="success-card">  
             <img className="success-image" src="/submitted.png" alt="submit-alt"></img>
