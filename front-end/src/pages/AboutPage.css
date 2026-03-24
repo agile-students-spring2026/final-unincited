@@ -29,10 +29,9 @@
 .about-mission,
 .about-methodology {
   margin-bottom: 20px;
-  border: 1px solid var(--line);
-  border-top: 2px solid var(--accent);
-  padding: 12px;
-  background-color: var(--bg-surface);
+  padding: 14px;
+  background-color: var(--bg-soft);
+  border-radius: var(--radius-soft);
 }
 
 .mission-title,

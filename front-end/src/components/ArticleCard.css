@@ -2,12 +2,12 @@
   position: relative;
   background-color: var(--bg-surface);
   overflow: hidden;
-  border: 1px solid var(--line);
   cursor: pointer;
+  border-radius: var(--radius-soft);
 }
 
 .article-card:hover {
-  background-color: #f7efde;
+  background-color: var(--bg-soft);
 }
 
 .article-card::before {
@@ -22,14 +22,13 @@
 
 .article-thumbnail {
   width: 100%;
-  height: 160px;
+  height: 170px;
   background-color: #d7d7d1;
   object-fit: cover;
-  border-bottom: 1px solid var(--line);
 }
 
 .article-content {
-  padding: 12px;
+  padding: 14px;
 }
 
 .article-meta {
@@ -60,18 +59,18 @@
 }
 
 .article-title {
-  font-size: 1.75rem;
-  font-weight: 700;
+  font-size: 1.68rem;
+  font-weight: 400;
   color: var(--text-main);
-  margin-bottom: 6px;
-  line-height: 1.18;
+  margin-bottom: 7px;
+  line-height: 1.14;
 }
 
 .article-summary {
-  font-size: 0.93rem;
+  font-size: 0.95rem;
   color: var(--text-main);
-  margin-bottom: 10px;
-  line-height: 1.45;
+  margin-bottom: 11px;
+  line-height: 1.46;
 }
 
 .article-footer {
@@ -91,14 +90,14 @@
 }
 
 .tag {
-  font-size: 0.7rem;
-  padding: 2px 7px;
-  border: 1px solid var(--line);
+  font-size: 0.72rem;
+  padding: 3px 9px;
   font-weight: 400;
   text-transform: uppercase;
   letter-spacing: 0.04em;
   color: var(--text-main);
-  background: #f7efde;
+  background: rgba(192, 13, 31, 0.09);
+  border-radius: 999px;
 }
 
 .sentiment.positive {

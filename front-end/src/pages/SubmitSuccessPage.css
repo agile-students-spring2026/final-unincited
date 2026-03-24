@@ -23,10 +23,9 @@
   flex-direction: column;
   padding: 34px 20px;
   text-align: center;
-  border: 1px solid var(--line);
-  border-top: 2px solid var(--accent);
   align-items: center;
-  background: var(--bg-surface);
+  background: var(--bg-soft);
+  border-radius: var(--radius-soft);
 }
 
 .success-image {

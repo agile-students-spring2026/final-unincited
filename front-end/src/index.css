@@ -1,17 +1,32 @@
+@font-face {
+  font-family: "The Silver Editorial";
+  src: url("/fonts/TheSilverEditorial-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "The Silver Editorial";
+  src: url("/fonts/TheSilverEditorial-Italic.ttf") format("truetype");
+  font-weight: 400;
+  font-style: italic;
+}
+
 :root {
-  --font-serif: Georgia, "Times New Roman", serif;
-  --bg-page: #c00d1f;
+  --font-editorial-regular: "The Silver Editorial", Georgia, serif;
+  --font-editorial-italic: "The Silver Editorial", Georgia, serif;
+  --bg-page: #bb081a;
   --bg-surface: #f5ecda;
-  --bg-muted: #ede3d0;
-  --text-main: #171515;
-  --text-muted: #6c625a;
-  --line: #b7a999;
-  --line-strong: #877a6e;
-  --black: #141313;
-  --white: #fffaf1;
+  --bg-muted: #ece1cd;
+  --bg-soft: #f8f0df;
+  --text-main: #1b1716;
+  --text-muted: #6d635b;
+  --black: #171414;
+  --white: #fff7eb;
   --accent: #c00d1f;
-  --accent-soft: #e9c9be;
-  --accent-deep: #8f0a17;
+  --accent-soft: #e7bdb3;
+  --accent-deep: #880914;
+  --radius-soft: 10px;
   line-height: 1.5;
 }
 
@@ -29,11 +44,49 @@ body {
   margin: 0;
   background: var(--bg-page);
   color: var(--text-main);
-  font-family: var(--font-serif);
+  font-family: var(--font-editorial-regular);
 }
 
 button,
 input,
 textarea {
-  font-family: inherit;
+  font-family: var(--font-editorial-regular);
+}
+
+.dashboard-title,
+.my-articles-title,
+.submit-title,
+.about-title,
+.article-title,
+.success-title,
+.signup-title,
+.forgot-title,
+.card-title,
+.dashboard-subtitle,
+.my-articles-subtitle,
+.submit-subtitle,
+.about-subtitle,
+.card-subtitle,
+.source,
+.source-name,
+.tag,
+.tab-btn,
+.analysis-value {
+  font-family: var(--font-editorial-italic);
+}
+
+.dashboard-title,
+.my-articles-title,
+.submit-title,
+.about-title,
+.article-title {
+  letter-spacing: -0.01em;
+}
+
+.dashboard-subtitle,
+.my-articles-subtitle,
+.submit-subtitle,
+.about-subtitle {
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
