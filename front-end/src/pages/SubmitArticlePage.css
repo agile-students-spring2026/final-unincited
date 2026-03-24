@@ -1,74 +1,92 @@
 .submit-page {
   min-height: 100vh;
-  max-width: 420px;
-  margin: 0 auto; 
-  padding: 20px 16px 90px; /* bottom padding to avoid covering nav*/
+  padding: 20px 16px 92px;
   box-sizing: border-box;
-
   display: flex;
   flex-direction: column;
-  position: relative;
 }
-.back-button {
-    position: absolute;
-    top: 16px;
-    left: 16px;
 
-    background: none;
-    border: none;
-    cursor: pointer;
-    margin-bottom: 30px;
-}
-.submit-title {
+.submit-page .back-button {
+  align-self: flex-start;
+  background: none;
+  border: none;
+  color: var(--text-main);
   font-size: 1.5rem;
-  margin-top: 40px;
-  font-weight: 600;
-  color: #111827;
+  cursor: pointer;
+  margin-bottom: 14px;
+}
+
+.submit-title {
+  font-size: 2.28rem;
+  font-weight: 400;
+  color: var(--text-main);
 }
 
 .submit-subtitle {
-  font-size: 0.95rem;
-  color: #6b7280;
+  font-size: 0.8rem;
+  color: var(--accent-deep);
   margin-bottom: 18px;
 }
 
 .submit-card {
-    display: flex;
-    flex-direction: column;
-    padding:20px;
-    border: 1px solid #eef0f5;
+  display: flex;
+  flex-direction: column;
+  padding: 15px;
+  background: var(--bg-soft);
+  border-radius: var(--radius-soft);
 }
 
 .card-title {
-    font-weight: 600;
-    font-size: .9rem;
+  font-weight: 400;
+  font-size: 1.1rem;
+  color: var(--text-main);
+}
 
+.card-subtitle {
+  color: var(--text-muted);
+  font-size: 0.86rem;
+  padding-top: 5px;
 }
-.card-subtitle{
-    color: #6b7280;
-    font-size: .8rem;
-    padding-top: 5px;
-}
+
 .submit-form {
-    padding-top: 10px;
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
+  padding-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
+
 .submit-input {
-    padding: 10px 10px 10px 10px;
-    border-radius: 4px;
-    border: 1px solid #d1d5db;
-    
-    outline: none;
-    
+  padding: 12px 13px;
+  border: none;
+  border-bottom: 2px solid var(--accent-soft);
+  outline: none;
+  background: var(--bg-surface);
+  color: var(--text-main);
+  border-radius: 0;
 }
+
+.submit-input:focus {
+  border-bottom-color: var(--accent);
+}
+
+.submit-input::placeholder {
+  color: var(--text-muted);
+}
+
 .submit-button {
-    color: white;
-    background: #111827;
-    padding: 12px 16px 12px 12px;
-    border-radius: 16px;
-    margin-top: auto;
-    font-size: .75rem;
-    cursor: pointer;
+  color: var(--white);
+  background: var(--accent);
+  border: none;
+  padding: 11px 14px;
+  margin-top: 4px;
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  border-radius: var(--radius-soft);
+}
+
+.submit-button:disabled {
+  background: #8a5f63;
+  border-color: #8a5f63;
+  cursor: not-allowed;
 }

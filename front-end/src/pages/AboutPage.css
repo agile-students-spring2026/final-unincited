@@ -1,57 +1,62 @@
 .about-page {
   min-height: 100vh;
-  max-width: 420px;
-  margin: 0 auto; 
-  padding: 20px 16px 90px; /* bottom padding to avoid covering nav*/
+  padding: 20px 16px 92px;
   box-sizing: border-box;
-
   display: flex;
   flex-direction: column;
 }
+
 .about-title {
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: #111827;
+  font-size: 2.28rem;
+  font-weight: 400;
+  color: var(--text-main);
+  letter-spacing: -0.01em;
 }
 
 .about-subtitle {
-  font-size: 0.95rem;
-  color: #6b7280;
-  margin-bottom: 18px;
+  font-size: 0.8rem;
+  color: var(--accent-deep);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  margin-bottom: 20px;
 }
 
 .about-content {
-    display: flex;
-    flex-direction: column;
-    
+  display: flex;
+  flex-direction: column;
 }
 
-.about-mission, .about-methodology{
-    margin-bottom: 50px;
-    border: 1px solid #eef0f5;
-    padding: 5px 5px 5px 5px;
-    
-    background-color: rgb(255, 255, 255);
-   
+.about-mission,
+.about-methodology {
+  margin-bottom: 20px;
+  padding: 14px;
+  background-color: var(--bg-soft);
+  border-radius: var(--radius-soft);
 }
-.mission-title, .methodology-title{
-    padding: 5px 5px 5px 5px;
-    font-weight: 600;
+
+.mission-title,
+.methodology-title {
+  padding-bottom: 6px;
+  font-weight: 400;
+  font-size: 0.95rem;
 }
-.mission-text, .methodology-text{
-    padding: 5px 5px 5px 5px;
-    font-size: .95rem;
+
+.mission-text,
+.methodology-text {
+  font-size: 0.95rem;
+  line-height: 1.55;
 }
 
 .logout-button {
-    color: white;
-    background: #111827;
-    padding: 12px 16px 12px 12px;
-    border-radius: 16px;
-    margin-top: auto;
-    font-size: .75rem;
-    cursor: pointer;
-   
+  color: var(--white);
+  background: var(--accent);
+  border: none;
+  padding: 11px 14px;
+  margin-top: auto;
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  border-radius: var(--radius-soft);
 }
 
 
