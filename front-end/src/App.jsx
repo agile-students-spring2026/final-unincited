@@ -1,6 +1,9 @@
 import './App.css'
 import { BrowserRouter as Router, Routes, Route, useLocation} from 'react-router-dom'
+
 import LoginPage from "./pages/LoginPage";
+import SignUpPage from "./pages/SignUpPage";
+import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import DashboardPage from './pages/DashboardPage'
 import AnalyticsPage from './pages/AnalyticsPage'
 import AboutPage from './pages/AboutPage'
@@ -14,14 +17,18 @@ import Nav from './components/Nav'
 function AppLayout() {
   const location = useLocation()
 
-  const hideNav = location.pathname === "/"
+  const hideNavRoutes = ["/", "/signup", "/forgot-password"];
+  const hideNav = hideNavRoutes.includes(location.pathname);
   //need to create path for article detail page 
   return (
     <>
       <Routes>
+        
         <Route path="/" element={<LoginPage />} />
-         <Route path="/submit" element={<SubmitArticlePage />} />
-         <Route path="/success" element={<SubmitSuccessPage />} />
+        <Route path="/signup" element={<SignUpPage />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="/submit" element={<SubmitArticlePage />} />
+        <Route path="/success" element={<SubmitSuccessPage />} />
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/analytics" element={<AnalyticsPage />} />
         <Route path="/about" element={<AboutPage />} />

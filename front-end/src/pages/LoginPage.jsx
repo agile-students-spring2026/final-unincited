@@ -12,7 +12,7 @@ function LoginPage() {
   // Handles the form submission
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Login:", email, password);
+    navigate("/dashboard");
   };
 
   return (
