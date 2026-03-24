@@ -40,6 +40,7 @@ function DashboardPage() {
               bias={article.analysis.bias.label}
               thumbnail={article.coverImageUrl}
               isBookmarked={article.isBookmarked}
+              status={article.status}
             />
             }
             

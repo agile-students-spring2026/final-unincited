@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import './ArticleCard.css'
 
 
-function ArticleCard({ id, source, title, summary, date, sentiment, bias, thumbnail, isBookmarked}) {
+function ArticleCard({ id, source, title, summary, date, sentiment, bias, thumbnail, isBookmarked, status}) {
 
   const [saved, setSaved] = useState(isBookmarked);
   const navigate = useNavigate();
@@ -39,16 +39,18 @@ function ArticleCard({ id, source, title, summary, date, sentiment, bias, thumbn
 
         <div className="article-footer">
           <span className="date">{date}</span>
-          <div className="article-tags">
+          {status === "pending" ? (
+            <span className="tag pending">PENDING</span>
+          ) : (
+            <div className="article-tags">
               <span className={`tag sentiment ${sentiment.toLowerCase()}`}>
                 {sentiment}
               </span>
-
               <span className={`tag bias ${bias.toLowerCase()}`}>
                 {bias}
               </span>
-            
-          </div>
+            </div>
+          )}
         </div>
       </div>
 

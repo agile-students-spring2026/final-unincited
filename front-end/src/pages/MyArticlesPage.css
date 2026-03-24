@@ -1,0 +1,58 @@
+.my-articles-page {
+  min-height: 100vh;
+  max-width: 420px;
+  margin: 0 auto;
+  padding: 20px 16px 90px;
+  box-sizing: border-box;
+}
+
+.my-articles-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.my-articles-subtitle {
+  font-size: 0.95rem;
+  color: #6b7280;
+  margin-bottom: 18px;
+}
+
+/* Tab bar  */
+.tab-bar {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 10px 6px;
+  border-radius: 999px;
+  border: 1.5px solid #d1d5db;
+  background: white;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: #374151;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+  white-space: nowrap;
+}
+
+.tab-btn.active {
+  background: #e5e7eb;
+  border-color: #e5e7eb;
+  color: #111827;
+}
+
+.tab-btn:not(.active):hover {
+  border-color: #9ca3af;
+}
+
+/* Temporarily reused dashboard list view here and will change */
+.articles-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
