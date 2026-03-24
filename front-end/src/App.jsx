@@ -1,6 +1,6 @@
 import './App.css'
 import { BrowserRouter as Router, Routes, Route, useLocation} from 'react-router-dom'
-import LoginPage from './pages/LoginPage'
+import LoginPage from "./pages/LoginPage";
 import DashboardPage from './pages/DashboardPage'
 import AnalyticsPage from './pages/AnalyticsPage'
 import AboutPage from './pages/AboutPage'

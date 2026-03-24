@@ -1,0 +1,66 @@
+/* Container */
+.signup-container {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    background-color: #f8f7f7;
+    padding-top: 170px;
+  }
+  
+  /* Box */
+  .signup-box {
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    max-width: 500px;
+  }
+  
+  /* Title */
+  .signup-title {
+    text-align: center;
+  }
+  
+  /* Input */
+  .signup-input {
+    width: 100%;
+    padding: 17px;
+    background-color: #d8d6d6;
+    border: 2px solid #000;
+    box-sizing: border-box;
+  }
+
+  .signup-input::placeholder{
+    color: black;
+    font-size: 12px;
+  }
+  
+  /* Submit */
+  .signup-button {
+    padding: 15px;
+    border-radius: 20px;
+    border: none;
+    background-color: #000;
+    color: white;
+    font-size: 12px;
+    cursor: pointer;
+  }
+  
+  .signup-button:hover {
+    background-color: #333;
+  }
+  
+  /* Link to go back to login page */
+  .back-to-login {
+    text-align: center;
+    font-size: 12px;
+    margin-top: 15px;
+    cursor: pointer;
+    text-decoration: underline;
+  }
+  
+  .back-to-login:hover {
+    color: #555;
+  }

@@ -1,0 +1,125 @@
+/* Full page container to center everything*/
+.login-container {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; 
+    background-color: #f8f7f7;
+    padding-top: 170px;    
+}
+  
+/* Container for both login input boxes*/
+.login-box {
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    max-width: 500px;
+    padding-bottom: 20px;
+}
+  
+/* Input boxes */
+.login-input {
+    width: 100%;
+    padding: 17px;
+    background-color: #d8d6d6;
+    border: 2px solid #000000;
+    box-sizing: border-box;
+}
+  
+/* Button for submitting*/
+.login-button {
+    padding: 15px;
+    border-radius: 20px;
+    border: none;
+    background-color: #000000;
+    color: rgba(255, 255, 255, 0.86);
+    font-size: 12px;
+    cursor: pointer;
+}
+
+/* Hover effect for login button */
+.login-button:hover {
+    background-color: #333;
+}
+
+/* Placeholder text inside login boxes*/
+.login-input::placeholder {
+    color: black;
+    font-size: 12px;
+}
+
+/* Forgot password text */
+.forgot-password {
+    font-size: 11px;
+    color: #000000;
+    text-align: right;
+    cursor: pointer;
+    margin-top: -10px; 
+    font-weight: bold;
+    padding-top: 10px;
+    padding-bottom: 20px;
+    text-decoration: underline;
+}
+  
+/* Hover effect for forgot password link */
+.forgot-password:hover {
+    color: #464444;
+}
+
+.signup-text {
+    font-size: 12px;
+    color: #000000;
+    text-align: center;
+    margin-top: 70px;
+}
+  
+/* "NEW TO NEWS BIAS?" text */
+.signup-link {
+    color: black;
+    font-weight: bold;
+    cursor: pointer;
+    text-decoration: underline;
+    padding-left: 5px;
+}
+  
+/* Hover effect for register link */
+.signup-link:hover {
+    color: #464444;
+}
+
+/* Container for social login buttons */
+.social-section {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+  
+/* Social button styling */
+.social-button {
+    width: 100%;
+    padding: 16px;
+    border-radius: 30px;
+    border: 2px solid #000000;
+    background-color: white;
+    font-size: 12px;
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    cursor: pointer;
+    justify-content: center;   
+}
+
+/* Text inside social buttons */
+.social-button span {
+    letter-spacing: 0.5px;
+}
+ 
+/* Social icon buttons */
+.social-button img {
+    width: 19px;
+    height: 21px;
+}
+
