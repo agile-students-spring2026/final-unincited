@@ -7,18 +7,18 @@
 }
 
 .about-title {
-  font-size: 2.2rem;
-  font-weight: 700;
+  font-size: 2.28rem;
+  font-weight: 400;
   color: var(--text-main);
   letter-spacing: -0.01em;
 }
 
 .about-subtitle {
-  font-size: 0.88rem;
-  color: var(--text-muted);
+  font-size: 0.8rem;
+  color: var(--accent-deep);
   text-transform: uppercase;
   letter-spacing: 0.07em;
-  margin-bottom: 18px;
+  margin-bottom: 20px;
 }
 
 .about-content {
@@ -37,8 +37,8 @@
 .mission-title,
 .methodology-title {
   padding-bottom: 6px;
-  font-weight: 700;
-  font-size: 1rem;
+  font-weight: 400;
+  font-size: 0.95rem;
 }
 
 .mission-text,
@@ -50,12 +50,13 @@
 .logout-button {
   color: var(--white);
   background: var(--accent);
-  border: 1px solid var(--accent);
+  border: none;
   padding: 11px 14px;
   margin-top: auto;
   font-size: 0.75rem;
   letter-spacing: 0.04em;
   cursor: pointer;
+  border-radius: var(--radius-soft);
 }
 
 
