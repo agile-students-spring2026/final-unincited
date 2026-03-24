@@ -7,6 +7,7 @@ import AboutPage from './pages/AboutPage'
 import MyArticlesPage from './pages/MyArticlesPage'
 import SubmitArticlePage from './pages/SubmitArticlePage'
 import SubmitSuccessPage from './pages/SubmitSuccessPage'
+import ArticlePage from './pages/ArticlePage'
 
 import Nav from './components/Nav'
 
@@ -15,7 +16,6 @@ function AppLayout() {
   const location = useLocation()
 
   const hideNav = location.pathname === "/"
-  //need to create path for article detail page 
   return (
     <>
       <Routes>
@@ -26,6 +26,7 @@ function AppLayout() {
         <Route path="/analytics" element={<AnalyticsPage />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/my-articles" element={<MyArticlesPage />} />
+        <Route path="/article/:id" element={<ArticlePage />} />
         
       </Routes>
 

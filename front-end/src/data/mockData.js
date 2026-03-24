@@ -33,22 +33,70 @@ const shortText = (value, maxLen = 145) => {
   return `${trimmed.slice(0, maxLen).trimEnd()}...`;
 };
 
-const makeHighlight = (content, keyword) => {
-  if (!keyword) {
+const makeHighlights = (content) => {
+  const clean = content.trim();
+  if (!clean) {
     return [];
   }
 
-  const idx = content.toLowerCase().indexOf(keyword.toLowerCase());
-  if (idx === -1) {
-    return [];
+  const sentenceParts = clean
+    .split(/[.!?]+\s*/)
+    .map((part) => part.trim())
+    .filter((part) => part.length >= 24);
+
+  const uniqueRanges = [];
+  const labels = [
+    "Potential framing language.",
+    "Potential emotional wording.",
+    "Potential loaded claim.",
+    "Potential persuasion cue."
+  ];
+
+  for (let i = 0; i < sentenceParts.length && uniqueRanges.length < 4; i += 1) {
+    const sentence = sentenceParts[i];
+    const sentenceStart = clean.indexOf(sentence);
+    if (sentenceStart === -1) {
+      continue;
+    }
+
+    const words = sentence.split(/\s+/).filter(Boolean);
+    if (words.length < 4) {
+      continue;
+    }
+
+    const phrase = words.slice(0, Math.min(7, words.length)).join(" ");
+    const startIndex = clean.indexOf(phrase, sentenceStart);
+    const endIndex = startIndex + phrase.length;
+
+    if (startIndex < 0 || endIndex <= startIndex) {
+      continue;
+    }
+
+    const overlaps = uniqueRanges.some(
+      (range) => startIndex < range.endIndex && endIndex > range.startIndex
+    );
+
+    if (!overlaps) {
+      uniqueRanges.push({
+        startIndex,
+        endIndex,
+        type: "bias-indicator",
+        description: labels[uniqueRanges.length % labels.length]
+      });
+    }
   }
 
+  if (uniqueRanges.length > 0) {
+    return uniqueRanges;
+  }
+
+  const fallbackLength = Math.min(42, clean.length);
   return [
     {
-      startIndex: idx,
-      endIndex: idx + keyword.length,
+      startIndex: 0,
+      endIndex: fallbackLength,
       type: "bias-indicator",
-      description: "Model-highlighted phrase for faster manual review."
+      description: "Potential framing language."
     }
   ];
 };
@@ -71,7 +119,6 @@ const buildArticle = (post, user, index) => {
 
   const publishDate = new Date(Date.now() - (index + 1) * 86400000).toISOString().slice(0, 10);
   const content = `${post.body} Analysis signals and framing cues were detected by the prototype model.`;
-  const keyword = post?.tags?.[0] || post?.title?.split(" ")?.[0] || "";
 
   return {
     id: `article_${post.id}`,
@@ -95,7 +142,7 @@ const buildArticle = (post, user, index) => {
     },
     summary: shortText(post.body),
     content,
-    highlights: makeHighlight(content, keyword)
+    highlights: makeHighlights(content)
   };
 };
 
