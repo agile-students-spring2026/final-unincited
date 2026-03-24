@@ -5,6 +5,9 @@ import DashboardPage from './pages/DashboardPage'
 import AnalyticsPage from './pages/AnalyticsPage'
 import AboutPage from './pages/AboutPage'
 import MyArticlesPage from './pages/MyArticlesPage'
+import SubmitArticlePage from './pages/SubmitArticlePage'
+import SubmitSuccessPage from './pages/SubmitSuccessPage'
+
 import Nav from './components/Nav'
 
 
@@ -17,11 +20,13 @@ function AppLayout() {
     <>
       <Routes>
         <Route path="/" element={<LoginPage />} />
+         <Route path="/submit" element={<SubmitArticlePage />} />
+         <Route path="/success" element={<SubmitSuccessPage />} />
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/analytics" element={<AnalyticsPage />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/my-articles" element={<MyArticlesPage />} />
-      
+        
       </Routes>
 
       {!hideNav && <Nav />}
