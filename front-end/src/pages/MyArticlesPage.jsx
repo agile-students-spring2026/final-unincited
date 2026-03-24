@@ -1,19 +1,58 @@
-import { useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import ArticleCard from '../components/ArticleCard'
-import { mockArticles } from '../data/mockData'
+import { fetchMockArticles } from '../data/mockData'
 import './MyArticlesPage.css'
 
 function MyArticlesPage() {
   const [activeTab, setActiveTab] = useState('submitted')
+  const [articles, setArticles] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
   const navigate = useNavigate()
 
-  const submittedArticles = mockArticles
-    .filter(a => a.isSubmitted)
-    .sort((a, b) => (a.status === 'pending' ? -1 : 1) - (b.status === 'pending' ? -1 : 1))
-  const savedArticles = mockArticles
-    .filter(a => a.isBookmarked)
-    .sort((a, b) => (a.status === 'pending' ? -1 : 1) - (b.status === 'pending' ? -1 : 1))
+  useEffect(() => {
+    let isMounted = true
+
+    const loadArticles = async () => {
+      try {
+        const payload = await fetchMockArticles()
+        if (isMounted) {
+          setArticles(payload)
+        }
+      } catch (err) {
+        if (isMounted) {
+          setError(err.message || 'Could not load articles.')
+        }
+      } finally {
+        if (isMounted) {
+          setLoading(false)
+        }
+      }
+    }
+
+    loadArticles()
+
+    return () => {
+      isMounted = false
+    }
+  }, [])
+
+  const submittedArticles = useMemo(
+    () =>
+      articles
+        .filter(a => a.isSubmitted)
+        .sort((a, b) => (a.status === 'pending' ? -1 : 1) - (b.status === 'pending' ? -1 : 1)),
+    [articles]
+  )
+
+  const savedArticles = useMemo(
+    () =>
+      articles
+        .filter(a => a.isBookmarked)
+        .sort((a, b) => (a.status === 'pending' ? -1 : 1) - (b.status === 'pending' ? -1 : 1)),
+    [articles]
+  )
 
   const displayedArticles = activeTab === 'submitted' ? submittedArticles : savedArticles
 
@@ -44,7 +83,9 @@ function MyArticlesPage() {
       </div>
 
       <div className="articles-list">
-        {displayedArticles.map(article => (
+        {loading && <div>Loading articles...</div>}
+        {!loading && error && <div>{error}</div>}
+        {!loading && !error && displayedArticles.map(article => (
           <ArticleCard
             key={article.id}
             id={article.id}
