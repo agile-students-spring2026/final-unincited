@@ -5,19 +5,19 @@ function Nav() {
   return (
     <nav className="bottom-nav">
       <NavLink to="/dashboard" className="nav-item">
-        Dashboard
+        <img className="icon" src="/nav-dashboard.png"></img>
       </NavLink>
 
       <NavLink to="/analytics" className="nav-item">
-        Analytics
+        <img className="icon" src="/nav-stats.png"></img>
       </NavLink>
 
-      <NavLink to="/your-articles" className="nav-item">
-        Your Articles
+      <NavLink to="/my-articles" className="nav-item">
+        <img className="icon" src="/nav-myarticles.png"></img>
       </NavLink>
 
       <NavLink to="/about" className="nav-item">
-        About
+        <img className="icon" src="/nav-about.png"></img>
       </NavLink>
     </nav>
   )

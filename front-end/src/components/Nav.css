@@ -16,6 +16,11 @@
   font-size: 14px;
   font-weight: 500;
 }
+.icon {
+  width: 24px;
+  height: 24px;
+
+}
 
 .nav-item.active {
   color: #4F46E5;

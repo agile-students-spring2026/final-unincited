@@ -1,19 +1,50 @@
 import { useState } from "react";
 import './DashboardPage.css'
 import ArticleCard from "../components/ArticleCard";
-
-//need to inject mock data for article list
+import { mockArticles } from "../data/mockData"; //TEMPORARY
 function DashboardPage() {
 
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedBias, setSelectedBias] = useState("All");
-  const [selectedSentiment, setSelectedSentiment] = useState("All");
-
+  
+  //need to inject mock data for article list
+  //then filter using searchterm
+  
+  
   
   return <div className="dashboard-page">
       <div className="dashboard-title">Recent Articles</div>
       <div className="dashboard-subtitle">Articles with bias analysis</div>
+      
+      <div className="dashboard-controls">
+        <input
+          type="text"
+          placeholder="Search articles..."
+          className="dashboard-search"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+      </div>
+
       <div className="articles-list">
+          
+          {mockArticles.map((article) => {
+            if (article.title.toLowerCase().includes(searchTerm.toLowerCase())){
+              return <ArticleCard
+              key={article.id}
+              id={article.id}
+              source={article.sourceName}
+              title={article.title}
+              summary={article.summary}
+              date={article.publishDate}
+              sentiment={article.analysis.sentiment.label}
+              bias={article.analysis.bias.label}
+              thumbnail={article.coverImageUrl}
+              isBookmarked={article.isBookmarked}
+            />
+            }
+            
+        })}
+        
           
       </div>
 
