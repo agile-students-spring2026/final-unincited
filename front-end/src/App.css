@@ -8,7 +8,7 @@ html, body {
   margin: 0;
   padding: 0;
   font-family: var(--font-serif);
-  background: var(--bg-page);
+  background: var(--bg-surface);
 }
 
 .app-container {
@@ -16,6 +16,10 @@ html, body {
   min-height: 100vh;
   background: var(--bg-surface);
   border-top: 2px solid var(--accent);
+  max-width: 420px;
+  margin: 0 auto;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+
 }
 
 

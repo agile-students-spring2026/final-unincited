@@ -28,7 +28,6 @@ Users will be able to create an account, submit an article for analysis, view re
 ## Building and Testing
 
 
-
 ## Other Documentation
 
 1. See the [Sprint Planning instructions](instructions-0d-sprint-planning.md) for the requirements of Sprint Planning for each Sprint.
