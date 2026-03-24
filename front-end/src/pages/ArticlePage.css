@@ -1,0 +1,180 @@
+.article-page {
+  padding: 16px;
+  min-height: calc(100vh - 72px);
+}
+
+.back-button {
+  background: none;
+  border: none;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: 20px;
+}
+
+.back-button:hover {
+  opacity: 0.7;
+}
+
+.article-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.article-image {
+  width: 100%;
+  height: 220px;
+  background-color: #e0e0e0;
+  object-fit: cover;
+}
+
+.article-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.source-name {
+  font-size: 12px;
+  font-weight: 600;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.bookmark-btn {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  padding: 0;
+}
+
+.bookmark-btn:hover {
+  opacity: 0.7;
+}
+
+.article-title {
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.3;
+  margin: 0;
+  margin-bottom: 12px;
+}
+
+.article-meta {
+  display: flex;
+  gap: 20px;
+  font-size: 14px;
+  color: #666;
+}
+
+.author {
+  font-weight: 600;
+}
+
+.date {
+  color: #999;
+}
+
+.analysis-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background-color: #f5f5f5;
+  padding: 16px;
+}
+
+.analysis-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.analysis-row-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.analysis-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #333;
+}
+
+.analysis-value {
+  font-size: 13px;
+  font-weight: 700;
+  color: #333;
+}
+
+.analysis-slider {
+  position: relative;
+  width: 100%;
+  height: 14px;
+}
+
+.analysis-track {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: #d4d4d4;
+  transform: translateY(-50%);
+}
+
+.analysis-marker {
+  position: absolute;
+  top: 50%;
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 8px solid #a8a8a8;
+  transform: translate(-50%, -70%);
+}
+
+.article-content {
+  font-size: 16px;
+  line-height: 1.6;
+  color: #333;
+}
+
+.article-content p {
+  margin: 0;
+}
+
+.article-loading,
+.article-error {
+  font-size: 16px;
+  color: #333;
+}
+
+/* Highlight colors for bias indicators */
+.highlight {
+  padding: 1px 3px;
+}
+
+.highlight-tone-0 {
+  background-color: #f6d5d5;
+}
+
+.highlight-tone-1 {
+  background-color: #f8ecc9;
+}
+
+.highlight-tone-2 {
+  background-color: #d8efdd;
+}
+
+.highlight-tone-3 {
+  background-color: #d6e8f8;
+}
+
+.highlight-tone-4 {
+  background-color: #eadcf7;
+}

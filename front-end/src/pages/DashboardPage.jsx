@@ -1,16 +1,49 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import './DashboardPage.css'
 import ArticleCard from "../components/ArticleCard";
-import { mockArticles } from "../data/mockData"; //TEMPORARY
+import { fetchMockArticles } from "../data/mockData";
 function DashboardPage() {
 
   const [searchTerm, setSearchTerm] = useState("");
-  
-  //need to inject mock data for article list
-  //then filter using searchterm
-  
-  
-  
+  const [articles, setArticles] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadArticles = async () => {
+      try {
+        const payload = await fetchMockArticles();
+        if (isMounted) {
+          setArticles(payload);
+        }
+      } catch (err) {
+        if (isMounted) {
+          setError(err.message || "Could not load article feed.");
+        }
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+        }
+      }
+    };
+
+    loadArticles();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const filteredArticles = useMemo(
+    () =>
+      articles.filter((article) =>
+        article.title.toLowerCase().includes(searchTerm.toLowerCase())
+      ),
+    [articles, searchTerm]
+  );
+
   return <div className="dashboard-page">
       <div className="dashboard-title">Recent Articles</div>
       <div className="dashboard-subtitle">Articles with bias analysis</div>
@@ -26,26 +59,24 @@ function DashboardPage() {
       </div>
 
       <div className="articles-list">
-          
-          {mockArticles.map((article) => {
-            if (article.title.toLowerCase().includes(searchTerm.toLowerCase())){
-              return <ArticleCard
-              key={article.id}
-              id={article.id}
-              source={article.sourceName}
-              title={article.title}
-              summary={article.summary}
-              date={article.publishDate}
-              sentiment={article.analysis.sentiment.label}
-              bias={article.analysis.bias.label}
-              thumbnail={article.coverImageUrl}
-              isBookmarked={article.isBookmarked}
-            />
-            }
-            
-        })}
-        
-          
+        {loading && <div>Loading articles...</div>}
+        {!loading && error && <div>{error}</div>}
+
+        {!loading && !error && filteredArticles.map((article) => (
+          <ArticleCard
+            key={article.id}
+            id={article.id}
+            source={article.sourceName}
+            title={article.title}
+            summary={article.summary}
+            date={article.publishDate}
+            sentiment={article.analysis.sentiment.label}
+            bias={article.analysis.bias.label}
+            thumbnail={article.coverImageUrl}
+            isBookmarked={article.isBookmarked}
+            status={article.status}
+          />
+        ))}
       </div>
 
   </div>
