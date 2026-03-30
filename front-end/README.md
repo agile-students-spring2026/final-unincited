@@ -22,7 +22,7 @@ src/
 ### 1. Navigate to the frontend directory
 
 ```bash
-cd frontend
+cd front-end
 ```
 
 ### 2. Install dependencies
