@@ -25,6 +25,14 @@ Users will be able to create an account, submit an article for analysis, view re
 | Uma Patel           |  [@umapaterl5](https://github.com/umapatel5)|
 | Kevin Pham          | [@knp4830](https://github.com/knp4830) |
 
+
+## Project Background
+The spread of news online makes it difficult for users to identify bias in the information they consume. News articles often use subtle word choice, tone, and framing to influence how events are perceived, even when the underlying facts are the same.
+
+With the growing role of social media, individuals are often exposed to information that reinforces existing perspectives. 
+
+The News Bias Comparison App aims to provide users with tools to better understand how bias arises in written content. By analyzing the text and providing meaningful insights to the outcome of the bias and sentiment scores, this application gives users a deeper understanding how language shapes perception and enforce media literacy.
+
 ## Building and Testing
 
 
