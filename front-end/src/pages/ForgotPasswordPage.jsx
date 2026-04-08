@@ -1,57 +1,50 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import "./ForgotPasswordPage.css";
+import { useState } from 'react'
+import { Link } from 'react-router-dom'
+import { apiRequest } from '../lib/api'
 
 function ForgotPasswordPage() {
-  // State to store user input
-  const [email, setEmail] = useState("");
-  const navigate = useNavigate();
+  const [email, setEmail] = useState('')
+  const [message, setMessage] = useState('')
+  const [error, setError] = useState('')
 
-  // Handle form submission
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    alert("Recovery email sent (demo)");
-  };
+  const onSubmit = async (event) => {
+    event.preventDefault()
+    setMessage('')
+    setError('')
+
+    try {
+      const data = await apiRequest('/auth/reset', {
+        method: 'POST',
+        body: JSON.stringify({ email }),
+      })
+      setMessage(data.message || 'Reset request submitted.')
+    } catch (err) {
+      setError(err.message)
+    }
+  }
 
   return (
-    <div className="forgot-container">
-      <form onSubmit={handleSubmit} className="forgot-box">
-
-        {/* Title */}
-        <h2 className="forgot-title">RESET PASSWORD</h2>
-
-        {/* Subtitle */}
-        <p className="forgot-subtext">
-          Enter your email and we will send you a recovery link
-        </p>
-
-        {/* Email input */}
+    <main>
+      <h1>Forgot Password</h1>
+      <form onSubmit={onSubmit}>
+        <label htmlFor="email">Email</label>
         <input
-          className="forgot-input"
+          id="email"
+          name="email"
           type="email"
-          placeholder="ENTER YOUR E-MAIL"
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={(event) => setEmail(event.target.value)}
+          required
         />
-
-        {/* Submit button */}
-        <input
-          className="forgot-button"
-          type="submit"
-          value="SEND RECOVERY EMAIL"
-        />
-
-        {/* Back to login */}
-        <p 
-          className="back-to-login"
-          onClick={() => navigate("/")}
-        >
-          BACK TO LOGIN
-        </p>
-
+        <button type="submit">Send Reset Request</button>
       </form>
-    </div>
-  );
+      {message ? <p>{message}</p> : null}
+      {error ? <p>{error}</p> : null}
+      <p>
+        <Link to="/">Back to login</Link>
+      </p>
+    </main>
+  )
 }
 
-export default ForgotPasswordPage;
+export default ForgotPasswordPage

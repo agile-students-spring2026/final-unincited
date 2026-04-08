@@ -1,90 +1,78 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import "./LoginPage.css";
+import { useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import { apiRequest } from '../lib/api'
 
 function LoginPage() {
-  // State to store user input values
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  
-  const navigate = useNavigate();
+  const navigate = useNavigate()
+  const [form, setForm] = useState({ email: '', password: '' })
+  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
 
-  // Handles the form submission
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    navigate("/dashboard");
-  };
+  const onChange = (event) => {
+    const { name, value } = event.target
+    setForm((prev) => ({ ...prev, [name]: value }))
+  }
+
+  const onSubmit = async (event) => {
+    event.preventDefault()
+    setError('')
+    setLoading(true)
+
+    try {
+      const data = await apiRequest('/auth/login', {
+        method: 'POST',
+        body: JSON.stringify(form),
+      })
+
+      localStorage.setItem('authToken', data.token)
+      localStorage.setItem('currentUser', JSON.stringify(data.user))
+      navigate('/dashboard')
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   return (
-    <div className="login-container">
-      <form onSubmit={handleSubmit} className="login-box">
-
-        {/* Email input field */}
-        <div className="input-container"> 
-          <input
-            className="login-input"
-            type="email"
-            placeholder="E-MAIL"
-            value={email}
-            onChange={e => setEmail(e.target.value)}
-          />
-        </div>
-
-        {/* Password input field */}
-        <div className="input-container">
-          <input
-            className="login-input"
-            type="password"            
-            placeholder="PASSWORD"
-            value={password}
-            onChange={e => setPassword(e.target.value)}
-          />
-        </div>
-
-        {/* Forgot password link */}
-        <p 
-          className="forgot-password" 
-          onClick={() => navigate("/forgot-password")}
-        >
-          FORGOT PASSWORD?
-        </p>
-
-        {/* Submit login button */}
+    <main>
+      <h1>Login</h1>
+      <form onSubmit={onSubmit}>
+        <label htmlFor="email">Email</label>
         <input
-          className="login-button"
-          type="submit"
-          value="LOGIN"
+          id="email"
+          name="email"
+          type="email"
+          value={form.email}
+          onChange={onChange}
+          required
         />
 
-        {/* Sign up prompt */}
-        <p className="signup-text">
-          NEW TO NEWS BIAS? 
-          <span 
-            className="signup-link" 
-            onClick={() => navigate("/signup")}
-          >
-            REGISTER
-          </span>
-        </p> 
+        <label htmlFor="password">Password</label>
+        <input
+          id="password"
+          name="password"
+          type="password"
+          value={form.password}
+          onChange={onChange}
+          required
+        />
 
-        {/* Social login section */}
-        <div className="social-section">
-
-          <button className="social-button">
-            <span>LOGIN WITH</span>
-            <img src="/apple-logo.png" alt="apple" />
-          </button>
-
-          <button className="social-button">
-            <span>LOGIN WITH</span>
-            <img src="/google-logo.png" alt="google" />
-          </button>
-
-        </div>
-
+        <button type="submit" disabled={loading}>
+          {loading ? 'Logging in...' : 'Log In'}
+        </button>
       </form>
-    </div>
-  );
+
+      {error ? <p>{error}</p> : null}
+
+      <p>
+        Need an account? <Link to="/signup">Sign up</Link>
+      </p>
+      <p>
+        <Link to="/forgot-password">Forgot password?</Link>
+      </p>
+    </main>
+  )
 }
 
-export default LoginPage;
+export default LoginPage

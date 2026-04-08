@@ -35,6 +35,83 @@ The News Bias Comparison App aims to provide users with tools to better understa
 
 ## Building and Testing
 
+### Prerequisites
+
+- Node.js 20+ and npm
+- Git
+
+### 1) Clone and install dependencies
+
+From the project root:
+
+1. Install front-end dependencies:
+	 - `cd front-end`
+	 - `npm install`
+2. Install back-end dependencies:
+	 - `cd ../back-end`
+	 - `npm install`
+
+### 2) Environment variables (back-end)
+
+Create a file at [back-end/.env](back-end/.env) with private values.
+
+Required for LLM-powered article analysis:
+
+- `GROQ_API_KEY=your_private_key_here`
+
+Optional:
+
+- `PORT=3000`
+
+Do not commit `.env` files or secrets to version control.
+
+### 3) Run the project locally
+
+Start back-end (terminal 1):
+
+- `cd back-end`
+- `npm run dev`
+
+Start front-end (terminal 2):
+
+- `cd front-end`
+- `npm run dev`
+
+App URLs:
+
+- Front-end: `http://localhost:5173`
+- Back-end: `http://localhost:3000`
+- Back-end health check: `http://localhost:3000/health`
+
+### 4) Run back-end unit tests
+
+From [back-end](back-end):
+
+- `npm test`
+
+### 5) Run code coverage for back-end (c8)
+
+From [back-end](back-end):
+
+- `npm run coverage`
+
+This project uses Mocha + Chai for unit tests and c8 for coverage reporting.
+
+### Implemented Sprint Integration Notes
+
+- Back-end implemented with Express.js.
+- Dynamic routes return mock JSON data for auth/articles/analyze flows.
+- Static routes return files from [back-end/public](back-end/public):
+	- `/`
+	- `/terms`
+	- `/privacy`
+- Front-end login, sign-up, forgot-password, dashboard, article pages, and submit flow call back-end routes.
+- Front-end forms POST to back-end routes:
+	- `/auth/login`
+	- `/auth/signup`
+	- `/auth/reset`
+	- `/analyze`
+
 
 ## Other Documentation
 

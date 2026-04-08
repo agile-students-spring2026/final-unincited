@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import './DashboardPage.css'
 import ArticleCard from "../components/ArticleCard";
+import { API_BASE_URL } from '../lib/api';
 
 function DashboardPage() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -11,8 +12,8 @@ function DashboardPage() {
   const handleToggleSave = async (articleId, currentlySaved) => {
     try {
       const endpoint = currentlySaved
-        ? 'http://localhost:3000/articles/unsave'
-        : 'http://localhost:3000/articles/save'
+        ? `${API_BASE_URL}/articles/unsave`
+        : `${API_BASE_URL}/articles/save`
 
       const articleToUpdate = articles.find(
         (a) => String(a.id) === String(articleId)
@@ -52,8 +53,8 @@ function DashboardPage() {
     const loadArticles = async () => {
       try {
         const [articlesRes, userRes] = await Promise.all([
-          fetch("http://localhost:3000/articles"),
-          fetch("http://localhost:3000/articles/user/1"),
+          fetch(`${API_BASE_URL}/articles`),
+          fetch(`${API_BASE_URL}/articles/user/1`),
         ]);
 
         const articlesData = await articlesRes.json();

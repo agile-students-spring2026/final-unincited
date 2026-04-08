@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import './ArticlePage.css'
+import { API_BASE_URL } from '../lib/api'
 
 export default function ArticlePage() {
   const navigate = useNavigate()
@@ -13,8 +14,8 @@ export default function ArticlePage() {
   const handleSaveArticle = async () => {
     try {
       const endpoint = saved
-        ? 'http://localhost:3000/articles/unsave'
-        : 'http://localhost:3000/articles/save'
+        ? `${API_BASE_URL}/articles/unsave`
+        : `${API_BASE_URL}/articles/save`
 
       const body = saved
         ? { userId: 1, articleId: article.id }
@@ -45,7 +46,7 @@ export default function ArticlePage() {
 
     const loadArticle = async () => {
       try {
-        const articleRes =  await fetch(`http://localhost:3000/articles/${id}`)
+        const articleRes =  await fetch(`${API_BASE_URL}/articles/${id}`)
 
         const articleData = await articleRes.json()
 
@@ -80,7 +81,7 @@ export default function ArticlePage() {
 
         setArticle(selectedArticle)
 
-        const res = await fetch('http://localhost:3000/articles/user/1')
+        const res = await fetch(`${API_BASE_URL}/articles/user/1`)
         const data = await res.json()
 
         const isSaved = (data.savedArticles || []).some(

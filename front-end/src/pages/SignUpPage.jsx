@@ -1,100 +1,74 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import "./SignUpPage.css";
+import { useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import { apiRequest } from '../lib/api'
 
 function SignUpPage() {
-  // State to store user input values 
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const navigate = useNavigate()
+  const [form, setForm] = useState({ name: '', email: '', password: '' })
+  const [error, setError] = useState('')
+  const [success, setSuccess] = useState('')
+  const [loading, setLoading] = useState(false)
 
-  // Navigation between pages
-  const navigate = useNavigate(); 
+  const onChange = (event) => {
+    const { name, value } = event.target
+    setForm((prev) => ({ ...prev, [name]: value }))
+  }
 
-  // Handle form submission
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    
+  const onSubmit = async (event) => {
+    event.preventDefault()
+    setError('')
+    setSuccess('')
+    setLoading(true)
+
     try {
+      await apiRequest('/auth/signup', {
+        method: 'POST',
+        body: JSON.stringify(form),
+      })
 
-      if(!username || !email ||!password){
-        throw new Error("All fields are required")
-      }
-
-      const response = await fetch("http://localhost:3000/auth/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name:username,
-          email,
-          password,
-        }),
-      });
-      const data = await response.json()
-      if (!response.ok){
-        throw new Error(data.message || "Failed to register")
-      }
-      navigate("/");
-
-    }catch(err){
-      console.error(err);
-      alert(err.message);
+      setSuccess('Account created. You can now log in.')
+      setTimeout(() => navigate('/'), 700)
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      setLoading(false)
     }
-  };
+  }
 
   return (
-    <div className="signup-container">
-      <form onSubmit={handleSubmit} className="signup-box">
+    <main>
+      <h1>Sign Up</h1>
+      <form onSubmit={onSubmit}>
+        <label htmlFor="name">Name</label>
+        <input id="name" name="name" type="text" value={form.name} onChange={onChange} required />
 
-        {/* Title */}
-        <h2 className="signup-title">REGISTER</h2>
+        <label htmlFor="email">Email</label>
+        <input id="email" name="email" type="email" value={form.email} onChange={onChange} required />
 
-        {/* Email input */}
+        <label htmlFor="password">Password</label>
         <input
-          className="signup-input"
-          type="text"
-          placeholder="USERNAME"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-        />
-        <input
-          className="signup-input"
-          type="email"
-          placeholder="E-MAIL"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-
-        {/* Password input */}
-        <input
-          className="signup-input"
+          id="password"
+          name="password"
           type="password"
-          placeholder="PASSWORD"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        
-
-        {/* Submit button */}
-        <input
-          className="signup-button"
-          type="submit"
-          value="REGISTER"
+          value={form.password}
+          onChange={onChange}
+          minLength={6}
+          required
         />
 
-        {/* Back to login */}
-        <p 
-          className="back-to-login"
-          onClick={() => navigate("/")}
-        >
-          BACK TO LOGIN
-        </p>
-
+        <button type="submit" disabled={loading}>
+          {loading ? 'Creating account...' : 'Create Account'}
+        </button>
       </form>
-    </div>
-  );
+
+      {error ? <p>{error}</p> : null}
+      {success ? <p>{success}</p> : null}
+
+      <p>
+        Already have an account? <Link to="/">Log in</Link>
+      </p>
+    </main>
+  )
 }
 
-export default SignUpPage;
+export default SignUpPage

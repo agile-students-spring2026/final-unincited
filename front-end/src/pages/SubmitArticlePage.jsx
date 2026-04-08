@@ -2,24 +2,55 @@
 import { useState } from 'react'
 import './SubmitArticlePage.css'
 import { useNavigate } from 'react-router-dom'
+import { API_BASE_URL } from '../lib/api'
 
 export default function SubmitArticlePage(){
     const navigate = useNavigate()
     const [url, setUrl] = useState('')
     const [title, setTitle] = useState('')
+    const [loading, setLoading] = useState(false)
+    const [error, setError] = useState('')
 
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault()
+        setError('')
         if (!url) {
             alert("Please enter a URL")
             return
-        }   // req to backend here if valid url
-        navigate('/success', {
-            state: {
-            title: title || url   
+        }
+
+        setLoading(true)
+
+        try {
+            const response = await fetch(`${API_BASE_URL}/analyze`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  userId: 1,
+                  url,
+                  title,
+                }),
+            })
+
+            const data = await response.json()
+
+            if (!response.ok) {
+                throw new Error(data.error || data.message || 'Failed to analyze article')
             }
-        })
+
+            const analyzedTitle = data?.article?.title || title || url
+
+            navigate('/success', {
+                state: {
+                  title: analyzedTitle,
+                }
+            })
+        } catch (err) {
+            setError(err.message)
+        } finally {
+            setLoading(false)
+        }
 
     }
     return <div className="submit-page">
@@ -45,8 +76,11 @@ export default function SubmitArticlePage(){
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                 />
-                <button className="submit-button" type="submit" disabled={!url}>ANALYZE</button>
+                <button className="submit-button" type="submit" disabled={!url || loading}>
+                  {loading ? 'ANALYZING...' : 'ANALYZE'}
+                </button>
             </form>
+            {error ? <p>{error}</p> : null}
         </div>
     </div>
 }
