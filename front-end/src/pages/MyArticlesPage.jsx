@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import ArticleCard from '../components/ArticleCard'
-import { fetchMockArticles } from '../data/mockData'
 import './MyArticlesPage.css'
 
 function MyArticlesPage() {
@@ -11,14 +10,51 @@ function MyArticlesPage() {
   const [error, setError] = useState('')
   const navigate = useNavigate()
 
+  const handleToggleSave = async (articleId, currentlySaved) => {
+    try {
+      const endpoint = currentlySaved
+        ? 'http://localhost:3000/articles/unsave'
+        : 'http://localhost:3000/articles/save'
+  
+      const articleToUpdate = articles.find((article) => String(article.id) === String(articleId))
+  
+      const body = currentlySaved
+        ? { userId: 1, articleId }
+        : { userId: 1, article: articleToUpdate }
+  
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      })
+  
+      const data = await response.json()
+  
+      if (!response.ok) {
+        throw new Error(data.message || 'Could not update saved articles.')
+      }
+  
+      setArticles(data.savedArticles || [])
+    } catch (err) {
+      setError(err.message || 'Could not update saved articles.')
+    }
+  }
+
   useEffect(() => {
     let isMounted = true
 
+    // Fetch user's saved and submitted articles from backend
     const loadArticles = async () => {
       try {
-        const payload = await fetchMockArticles()
+        const response = await fetch('http://localhost:3000/articles/user/1')
+        const data = await response.json()
+
+        if (!response.ok) {
+          throw new Error(data.message || 'Could not load articles.')
+        }
+
         if (isMounted) {
-          setArticles(payload)
+          setArticles(data.savedArticles || [])
         }
       } catch (err) {
         if (isMounted) {
@@ -39,18 +75,12 @@ function MyArticlesPage() {
   }, [])
 
   const submittedArticles = useMemo(
-    () =>
-      articles
-        .filter(a => a.isSubmitted)
-        .sort((a, b) => (a.status === 'pending' ? -1 : 1) - (b.status === 'pending' ? -1 : 1)),
-    [articles]
+    () => [],
+    []
   )
 
   const savedArticles = useMemo(
-    () =>
-      articles
-        .filter(a => a.isBookmarked)
-        .sort((a, b) => (a.status === 'pending' ? -1 : 1) - (b.status === 'pending' ? -1 : 1)),
+    () => articles,
     [articles]
   )
 
@@ -93,11 +123,12 @@ function MyArticlesPage() {
             title={article.title}
             summary={article.summary}
             date={article.publishDate}
-            sentiment={article.analysis.sentiment.label}
-            bias={article.analysis.bias.label}
+            sentiment={article.analysis?.sentiment?.label || 'N/A'}
+            bias={article.analysis?.bias?.label || 'N/A'}
             thumbnail={article.coverImageUrl}
-            isBookmarked={article.isBookmarked}
+            isBookmarked={true}
             status={article.status}
+            onToggleSave={handleToggleSave}
           />
         ))}
       </div>

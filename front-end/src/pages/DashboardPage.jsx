@@ -2,32 +2,83 @@ import { useEffect, useMemo, useState } from "react";
 import './DashboardPage.css'
 import ArticleCard from "../components/ArticleCard";
 import { fetchMockArticles } from "../data/mockData";
-function DashboardPage() {
 
+function DashboardPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+
+  const handleToggleSave = async (articleId, currentlySaved) => {
+    try {
+      const endpoint = currentlySaved
+        ? 'http://localhost:3000/articles/unsave'
+        : 'http://localhost:3000/articles/save'
+
+      const articleToUpdate = articles.find(
+        (a) => String(a.id) === String(articleId)
+      )
+
+      const body = currentlySaved
+        ? { userId: 1, articleId }
+        : { userId: 1, article: articleToUpdate }
+
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.message)
+      }
+
+      setArticles((prev) =>
+        prev.map((a) =>
+          String(a.id) === String(articleId)
+            ? { ...a, isBookmarked: !currentlySaved }
+            : a
+        )
+      )
+    } catch (err) {
+      console.error(err)
+    }
+  }
 
   useEffect(() => {
     let isMounted = true;
 
     const loadArticles = async () => {
       try {
-        const payload = await fetchMockArticles();
+        const payload = await fetchMockArticles()
+    
+        const res = await fetch('http://localhost:3000/articles/user/1')
+        const data = await res.json()
+    
+        const savedIds = new Set(
+          (data.savedArticles || []).map(a => String(a.id))
+        )
+    
+        const updated = payload.map(a => ({
+          ...a,
+          isBookmarked: savedIds.has(String(a.id))
+        }))
+    
         if (isMounted) {
-          setArticles(payload);
+          setArticles(updated)
         }
       } catch (err) {
         if (isMounted) {
-          setError(err.message || "Could not load article feed.");
+          setError(err.message || "Could not load article feed.")
         }
       } finally {
         if (isMounted) {
-          setLoading(false);
+          setLoading(false)
         }
       }
-    };
+    }
 
     loadArticles();
 
@@ -75,6 +126,7 @@ function DashboardPage() {
             thumbnail={article.coverImageUrl}
             isBookmarked={article.isBookmarked}
             status={article.status}
+            onToggleSave={handleToggleSave}
           />
         ))}
       </div>

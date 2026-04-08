@@ -4,8 +4,19 @@ import { useNavigate } from "react-router-dom";
 import './ArticleCard.css'
 
 
-function ArticleCard({ id, source, title, summary, date, sentiment, bias, thumbnail, isBookmarked, status}) {
-
+function ArticleCard({
+  id,
+  source,
+  title,
+  summary,
+  date,
+  sentiment,
+  bias,
+  thumbnail,
+  isBookmarked,
+  status,
+  onToggleSave
+}) {
   const [saved, setSaved] = useState(isBookmarked);
   const navigate = useNavigate();
 
@@ -21,16 +32,19 @@ function ArticleCard({ id, source, title, summary, date, sentiment, bias, thumbn
       <div className="article-content">
         <div className="article-meta">
           <span className="source">{source}</span>
-        
-          <button 
-            className={`save-button ${saved ? "saved" : ""}`}
-            onClick={(e) => {
+          <button className={`save-button ${saved ? "saved" : ""}`}
+            onClick={async (e) => {
               e.stopPropagation();
-              setSaved(!saved);
-            }}
-          >
-            {saved ? "★" : "☆"}
-          </button>
+              if (onToggleSave) {
+                await onToggleSave(id, saved)
+              }
+
+    setSaved(!saved)
+  }}
+>
+  {saved ? "★" : "☆"}
+</button>
+          
 
         </div>
 
