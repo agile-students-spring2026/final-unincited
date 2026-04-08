@@ -113,7 +113,7 @@ function repairLikelyJson(text) {
     .replace(/,\s*]/g, ']')
 }
 
-
+//finds the index of each quote to the article body text, for highlighting later in frontend
 export function addHighlights(body, highlights=[]){
     return highlights.map((highlight) => {
         const startIndex = findMatch(body,highlight)

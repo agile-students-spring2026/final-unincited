@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import './DashboardPage.css'
 import ArticleCard from "../components/ArticleCard";
-import { fetchMockArticles } from "../data/mockData";
 
 function DashboardPage() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -52,22 +51,60 @@ function DashboardPage() {
 
     const loadArticles = async () => {
       try {
-        const payload = await fetchMockArticles()
-    
-        const res = await fetch('http://localhost:3000/articles/user/1')
-        const data = await res.json()
+        const [articlesRes, userRes] = await Promise.all([
+          fetch("http://localhost:3000/articles"),
+          fetch("http://localhost:3000/articles/user/1"),
+        ]);
+
+        const articlesData = await articlesRes.json();
+        const userData = await userRes.json();
+
+        //if req failed
+        if (!articlesRes.ok) {
+          throw new Error(articlesData.message || "Could not load articles.");
+        }
+
+        if (!userRes.ok) {
+          throw new Error(userData.message || "Could not load user articles.");
+        }
     
         const savedIds = new Set(
-          (data.savedArticles || []).map(a => String(a.id))
+          (userData.savedArticles || []).map(a => String(a.id))
         )
-    
-        const updated = payload.map(a => ({
-          ...a,
-          isBookmarked: savedIds.has(String(a.id))
-        }))
+        
+        //fix articles to match prev mock data structure
+        const mappedArticles = (articlesData.articles || []).map((article) => ({
+          id: article.id,
+          sourceName: article.source || "Unknown Source",
+          title: article.title || "Untitled Article",
+          summary:
+            article.explanation ||
+            (article.articleText
+              ? `${article.articleText.slice(0, 145).trimEnd()}...`
+              : ""),
+          publishDate: article.publicationDate
+            ? article.publicationDate.slice(0, 10)
+            : "",
+          coverImageUrl:
+            article.thumbnail ||
+            `https://picsum.photos/seed/${article.id}/640/420`,
+          isBookmarked: savedIds.has(String(article.id)),
+          status: "analyzed",
+          analysis: {
+            sentiment: {
+              label: article.sentimentLabel || "NEUTRAL",
+              score: article.sentimentScore ?? 0,
+            },
+            bias: {
+              label: article.biasLabel || "CENTER",
+              score: article.biasScore ?? 0,
+            },
+          },
+          originalArticle: article,
+        }));
     
         if (isMounted) {
-          setArticles(updated)
+          setArticles(mappedArticles)
         }
       } catch (err) {
         if (isMounted) {
@@ -87,6 +124,7 @@ function DashboardPage() {
     };
   }, []);
 
+  //filtering
   const filteredArticles = useMemo(
     () =>
       articles.filter((article) =>
