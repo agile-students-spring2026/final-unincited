@@ -96,7 +96,7 @@ export async function analyzeWithLLM(articleText){
     }
 
 }
-function safeParseJSON(text) {
+export function safeParseJSON(text) {
     
     const repaired = repairLikelyJson(text.trim())
   try {
