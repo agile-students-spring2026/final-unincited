@@ -1,5 +1,9 @@
 import express from 'express'
 import axios from 'axios'
+import crypto from 'crypto'
+import mockUsers from '../mockUsers.js'
+import mockArticles from '../mockArticles.js'
+
 
 import {preprocessText, extractMetadata, extractArticleContent} from '../services/scrapeArticle.js'
 import { analyzeWithLLM, addHighlights} from '../services/analyzeArticle.js'
@@ -8,7 +12,7 @@ const router = express.Router()
 
 router.post('/',async(req,res)=>{
     try {
-        const {url, userId, title} = req.body // from user submission
+        const {userId, url, title} = req.body // from user submission
         if (!url) {
             return res.status(400).json({ error: 'URL is required.' })
         }
@@ -33,6 +37,7 @@ router.post('/',async(req,res)=>{
         
 
         const articleObject = {
+            id : crypto.randomUUID(),
             url,
             title: articleContent.title || metadata.title || title,
             source: metadata.source,
@@ -51,8 +56,13 @@ router.post('/',async(req,res)=>{
             submittedBy: userId ||null,
             createdAt: new Date()
         }
-        //TODO add to user array, add article to db
-
+        
+        const user = mockUsers.find((u) => u.id === userId)
+        if (user){ //whole article for now, use id from db later
+            user.submittedArticles.push(articleObject.id)
+        }
+        // add article to db later
+        mockArticles.push(articleObject) 
         return res.status(200).json({
             message: 'Article analyzed successfully.',
             article: articleObject

@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { fetchMockArticles } from '../data/mockData'
 import './ArticlePage.css'
 
 export default function ArticlePage() {
@@ -46,15 +45,38 @@ export default function ArticlePage() {
 
     const loadArticle = async () => {
       try {
-        const articles = await fetchMockArticles()
-        const selectedArticle = articles.find((item) => item.id === id)
+        const articleRes =  await fetch(`http://localhost:3000/articles/${id}`)
 
-        if (!isMounted) return
+        const articleData = await articleRes.json()
 
-        if (!selectedArticle) {
+        const raw = articleData?.article
+        if (!raw) {
           setError('Article not found.')
           return
         }
+
+        const selectedArticle = {
+            id: raw.id,
+            sourceName: raw.source || "Unknown Source",
+            title: raw.title,
+            author: raw.author,
+            publishDate: raw.publicationDate?.slice(0, 10) || "",
+            coverImageUrl:
+              raw.thumbnail || `https://picsum.photos/seed/${raw.id}/640/420`,
+            content: raw.articleText || "",
+            highlights: raw.evidenceLines || [],
+            analysis: {
+              sentiment: {
+                label: raw.sentimentLabel || "NEUTRAL",
+                score: raw.sentimentScore ?? 0,
+              },
+              bias: {
+                label: raw.biasLabel || "CENTER",
+                score: raw.biasScore ?? 0,
+              },
+            },
+        }
+        if (!isMounted) return
 
         setArticle(selectedArticle)
 
@@ -89,7 +111,7 @@ export default function ArticlePage() {
 
     const content = article.content || ''
     const highlights = Array.isArray(article.highlights)
-      ? [...article.highlights].sort((a, b) => a.startIndex - b.startIndex)
+      ? [...article.highlights].filter(h => h.startIndex != null && h.endIndex != null).sort((a, b) => a.startIndex - b.startIndex)
       : []
 
     if (highlights.length === 0) {
@@ -126,7 +148,8 @@ export default function ArticlePage() {
     return parts
   }, [article])
 
-  const toSliderPosition = (score) => `${((score + 1) / 2) * 100}%`
+  const biasToSliderPosition = (score) => `${score * 100}%`
+  const sentimentToSliderPosition = (score) => `${((score + 1) / 2) * 100}%`
 
   if (loading) {
     return (
@@ -190,7 +213,7 @@ export default function ArticlePage() {
               <span
                 className="analysis-marker"
                 style={{
-                  left: toSliderPosition(article.analysis.bias.score),
+                  left: biasToSliderPosition(article.analysis.bias.score),
                 }}
               />
             </div>
@@ -208,7 +231,7 @@ export default function ArticlePage() {
               <span
                 className="analysis-marker"
                 style={{
-                  left: toSliderPosition(article.analysis.sentiment.score),
+                  left: sentimentToSliderPosition(article.analysis.sentiment.score),
                 }}
               />
             </div>

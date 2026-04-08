@@ -1,11 +1,14 @@
 import express from 'express'
 import mockUsers from '../mockUsers.js'
+import mockArticles from '../mockArticles.js'
 
 const router = express.Router()
 
-//get all articles
+//get all articles 
 router.get('/', (req, res) => {
-  res.json({ message: 'get all articles' })
+  
+  return res.status(200).json({ articles: mockArticles})
+  
 })
 
 // get saved and submitted articles for a user
@@ -62,10 +65,6 @@ router.post('/save', (req, res) => {
   })
 })
 
-//get an article by id
-router.get('/:id', (req, res) => {
-  res.json({ message: `get article ${req.params.id}` })
-})
 
 // remove a saved article for a user
 router.post('/unsave', (req, res) => {
@@ -95,4 +94,21 @@ router.post('/unsave', (req, res) => {
     })
   })
 
+
+//get an article by id
+router.get('/:id', (req, res) => {
+
+  const article = mockArticles.find((article) => article.id === req.params.id)
+
+  if (!article){
+      return res.status(404).json({
+      error: 'Article not found'
+    })
+  }
+  res.status(200).json({
+    message: "Found article",
+    article
+  })
+  
+})
 export default router

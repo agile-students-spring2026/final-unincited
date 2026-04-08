@@ -3,7 +3,8 @@ import { useNavigate } from "react-router-dom";
 import "./SignUpPage.css";
 
 function SignUpPage() {
-  // State to store user input values
+  // State to store user input values 
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -11,9 +12,36 @@ function SignUpPage() {
   const navigate = useNavigate(); 
 
   // Handle form submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Sign up:", email, password);
+    
+    try {
+
+      if(!username || !email ||!password){
+        throw new Error("All fields are required")
+      }
+
+      const response = await fetch("http://localhost:3000/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name:username,
+          email,
+          password,
+        }),
+      });
+      const data = await response.json()
+      if (!response.ok){
+        throw new Error(data.message || "Failed to register")
+      }
+      navigate("/");
+
+    }catch(err){
+      console.error(err);
+      alert(err.message);
+    }
   };
 
   return (
@@ -24,6 +52,13 @@ function SignUpPage() {
         <h2 className="signup-title">REGISTER</h2>
 
         {/* Email input */}
+        <input
+          className="signup-input"
+          type="text"
+          placeholder="USERNAME"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+        />
         <input
           className="signup-input"
           type="email"
@@ -40,6 +75,7 @@ function SignUpPage() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
+        
 
         {/* Submit button */}
         <input
