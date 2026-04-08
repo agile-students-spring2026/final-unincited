@@ -11,6 +11,36 @@ export default function ArticlePage() {
   const [error, setError] = useState('')
   const [saved, setSaved] = useState(false)
 
+  const handleSaveArticle = async () => {
+    try {
+      const endpoint = saved
+        ? 'http://localhost:3000/articles/unsave'
+        : 'http://localhost:3000/articles/save'
+
+      const body = saved
+        ? { userId: 1, articleId: article.id }
+        : { userId: 1, article }
+
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      })
+
+      const data = await response.json()
+      console.log('save response', response.status, data)
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to update saved article')
+      }
+
+      setSaved(!saved)
+    } catch (err) {
+      console.error(err)
+      setError(err.message || 'Could not update saved article')
+    }
+  }
+
   useEffect(() => {
     let isMounted = true
 
@@ -19,9 +49,7 @@ export default function ArticlePage() {
         const articles = await fetchMockArticles()
         const selectedArticle = articles.find((item) => item.id === id)
 
-        if (!isMounted) {
-          return
-        }
+        if (!isMounted) return
 
         if (!selectedArticle) {
           setError('Article not found.')
@@ -29,7 +57,15 @@ export default function ArticlePage() {
         }
 
         setArticle(selectedArticle)
-        setSaved(Boolean(selectedArticle.isBookmarked))
+
+        const res = await fetch('http://localhost:3000/articles/user/1')
+        const data = await res.json()
+
+        const isSaved = (data.savedArticles || []).some(
+          (a) => String(a.id) === String(selectedArticle.id)
+        )
+
+        setSaved(isSaved)
       } catch (err) {
         if (isMounted) {
           setError(err.message || 'Could not load article details.')
@@ -49,9 +85,7 @@ export default function ArticlePage() {
   }, [id])
 
   const contentParts = useMemo(() => {
-    if (!article) {
-      return []
-    }
+    if (!article) return []
 
     const content = article.content || ''
     const highlights = Array.isArray(article.highlights)
@@ -78,7 +112,7 @@ export default function ArticlePage() {
           type: 'highlight',
           value: content.slice(start, end),
           cssClass: `highlight-tone-${index % 5}`,
-          description: highlight.description || ''
+          description: highlight.description || '',
         })
       }
 
@@ -123,11 +157,15 @@ export default function ArticlePage() {
       </button>
 
       <div className="article-detail">
-        <img className="article-image" src={article.coverImageUrl} alt={article.title} />
+        <img
+          className="article-image"
+          src={article.coverImageUrl}
+          alt={article.title}
+        />
 
         <div className="article-header">
           <span className="source-name">{article.sourceName}</span>
-          <button className="bookmark-btn" onClick={() => setSaved((prev) => !prev)}>
+          <button className="bookmark-btn" onClick={handleSaveArticle}>
             {saved ? '★' : '☆'}
           </button>
         </div>
@@ -143,13 +181,17 @@ export default function ArticlePage() {
           <div className="analysis-item">
             <div className="analysis-row-header">
               <span className="analysis-label">Bias</span>
-              <span className="analysis-value">{article.analysis.bias.label}</span>
+              <span className="analysis-value">
+                {article.analysis.bias.label}
+              </span>
             </div>
-            <div className="analysis-slider" aria-label="Bias summary slider">
+            <div className="analysis-slider">
               <span className="analysis-track" />
               <span
                 className="analysis-marker"
-                style={{ left: toSliderPosition(article.analysis.bias.score) }}
+                style={{
+                  left: toSliderPosition(article.analysis.bias.score),
+                }}
               />
             </div>
           </div>
@@ -157,13 +199,17 @@ export default function ArticlePage() {
           <div className="analysis-item">
             <div className="analysis-row-header">
               <span className="analysis-label">Sentiment</span>
-              <span className="analysis-value">{article.analysis.sentiment.label}</span>
+              <span className="analysis-value">
+                {article.analysis.sentiment.label}
+              </span>
             </div>
-            <div className="analysis-slider" aria-label="Sentiment summary slider">
+            <div className="analysis-slider">
               <span className="analysis-track" />
               <span
                 className="analysis-marker"
-                style={{ left: toSliderPosition(article.analysis.sentiment.score) }}
+                style={{
+                  left: toSliderPosition(article.analysis.sentiment.score),
+                }}
               />
             </div>
           </div>
