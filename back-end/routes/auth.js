@@ -3,11 +3,37 @@ import mockUsers from '../mockUsers.js'
 
 const router = express.Router()
 
-router.get('/login', (req, res) => {
-  res.json({ message: 'login' })
+router.post('/login', (req, res) => {
+  const { email, password } = req.body
+
+  if (!email || !password) {
+    return res.status(400).json({
+      message: 'Email and password are required',
+    })
+  }
+
+  const user = mockUsers.find(
+    (existingUser) => existingUser.email === email && existingUser.password === password
+  )
+
+  if (!user) {
+    return res.status(401).json({
+      message: 'Invalid credentials',
+    })
+  }
+
+  return res.status(200).json({
+    message: 'Login successful',
+    token: 'mock-jwt-token',
+    user: {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+    },
+  })
 })
 
-router.post('/register', (req, res) => {
+const registerHandler = (req, res) => {
   const { name, email, password } = req.body
 
   if (!name || !email || !password) {
@@ -39,7 +65,10 @@ router.post('/register', (req, res) => {
     message: 'User created successfully',
     user: newUser,
   })
-})
+}
+
+router.post('/register', registerHandler)
+router.post('/signup', registerHandler)
 
 router.post('/reset', (req, res) => {
   res.json({ message: 'reset' })

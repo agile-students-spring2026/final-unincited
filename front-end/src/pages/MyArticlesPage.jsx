@@ -2,10 +2,12 @@ import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import ArticleCard from '../components/ArticleCard'
 import './MyArticlesPage.css'
+import { API_BASE_URL } from '../lib/api'
 
 function MyArticlesPage() {
   const [activeTab, setActiveTab] = useState('submitted')
-  const [articles, setArticles] = useState([])
+  const [savedArticlesState, setSavedArticlesState] = useState([])
+  const [submittedArticlesState, setSubmittedArticlesState] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const navigate = useNavigate()
@@ -13,10 +15,10 @@ function MyArticlesPage() {
   const handleToggleSave = async (articleId, currentlySaved) => {
     try {
       const endpoint = currentlySaved
-        ? 'http://localhost:3000/articles/unsave'
-        : 'http://localhost:3000/articles/save'
+        ? `${API_BASE_URL}/articles/unsave`
+        : `${API_BASE_URL}/articles/save`
   
-      const articleToUpdate = articles.find((article) => String(article.id) === String(articleId))
+      const articleToUpdate = savedArticlesState.find((article) => String(article.id) === String(articleId))
   
       const body = currentlySaved
         ? { userId: 1, articleId }
@@ -34,7 +36,7 @@ function MyArticlesPage() {
         throw new Error(data.message || 'Could not update saved articles.')
       }
   
-      setArticles(data.savedArticles || [])
+      setSavedArticlesState(data.savedArticles || [])
     } catch (err) {
       setError(err.message || 'Could not update saved articles.')
     }
@@ -46,7 +48,7 @@ function MyArticlesPage() {
     // Fetch user's saved and submitted articles from backend
     const loadArticles = async () => {
       try {
-        const response = await fetch('http://localhost:3000/articles/user/1')
+        const response = await fetch(`${API_BASE_URL}/articles/user/1`)
         const data = await response.json()
 
         if (!response.ok) {
@@ -54,7 +56,8 @@ function MyArticlesPage() {
         }
 
         if (isMounted) {
-          setArticles(data.savedArticles || [])
+          setSavedArticlesState(data.savedArticles || [])
+          setSubmittedArticlesState(data.submittedArticles || [])
         }
       } catch (err) {
         if (isMounted) {
@@ -75,13 +78,13 @@ function MyArticlesPage() {
   }, [])
 
   const submittedArticles = useMemo(
-    () => [],
-    []
+    () => submittedArticlesState,
+    [submittedArticlesState]
   )
 
   const savedArticles = useMemo(
-    () => articles,
-    [articles]
+    () => savedArticlesState,
+    [savedArticlesState]
   )
 
   const displayedArticles = activeTab === 'submitted' ? submittedArticles : savedArticles
@@ -119,14 +122,14 @@ function MyArticlesPage() {
           <ArticleCard
             key={article.id}
             id={article.id}
-            source={article.sourceName}
+            source={article.sourceName || article.source || 'Unknown Source'}
             title={article.title}
-            summary={article.summary}
-            date={article.publishDate}
-            sentiment={article.analysis?.sentiment?.label || 'N/A'}
-            bias={article.analysis?.bias?.label || 'N/A'}
-            thumbnail={article.coverImageUrl}
-            isBookmarked={true}
+            summary={article.summary || article.explanation || article.articleText?.slice(0, 145) || ''}
+            date={article.publishDate || article.publicationDate?.slice(0, 10) || ''}
+            sentiment={article.analysis?.sentiment?.label || article.sentimentLabel || 'N/A'}
+            bias={article.analysis?.bias?.label || article.biasLabel || 'N/A'}
+            thumbnail={article.coverImageUrl || article.thumbnail}
+            isBookmarked={activeTab === 'saved'}
             status={article.status}
             onToggleSave={handleToggleSave}
           />

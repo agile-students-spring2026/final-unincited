@@ -59,7 +59,7 @@ router.post('/',async(req,res)=>{
         
         const user = mockUsers.find((u) => u.id === userId)
         if (user){ //whole article for now, use id from db later
-            user.submittedArticles.push(articleObject.id)
+            user.submittedArticles.push(articleObject)
         }
         // add article to db later
         mockArticles.push(articleObject) 
