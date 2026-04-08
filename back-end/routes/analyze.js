@@ -8,7 +8,7 @@ const router = express.Router()
 
 router.post('/',async(req,res)=>{
     try {
-        const {url, userId, title} = req.body
+        const {url, userId, title} = req.body // from user submission
         if (!url) {
             return res.status(400).json({ error: 'URL is required.' })
         }
