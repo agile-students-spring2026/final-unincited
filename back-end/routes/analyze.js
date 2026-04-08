@@ -1,8 +1,10 @@
 import express from 'express'
 import axios from 'axios'
 
-import {preprocessText, extractMetadata, extractArticleContent} from '../services/scrapeArticle.js'
-import { analyzeWithLLM, addHighlights} from '../services/analyzeArticle.js'
+import { preprocessText, extractMetadata, extractArticleContent } from '../services/scrapeArticle.js'
+import { analyzeWithLLM, addHighlights } from '../services/analyzeArticle.js'
+import { saveArticle } from '../services/articleStore.js'
+
 const router = express.Router()
 
 
@@ -30,32 +32,49 @@ router.post('/',async(req,res)=>{
         }
         //llm call
         const analysis = await analyzeWithLLM(articleText)
-        
+        const highlights = addHighlights(articleText, analysis?.evidenceLines || [], analysis?.explanation)
 
         const articleObject = {
             url,
             title: articleContent.title || metadata.title || title,
             source: metadata.source,
-            author:metadata.author,
+            sourceName: metadata.source,
+            author: metadata.author,
             publicationDate: metadata.publicationDate,
+            publishDate: metadata.publicationDate,
             thumbnail: metadata.thumbnail,
+            coverImageUrl: metadata.thumbnail,
             articleText,
-            detectedTopic: analysis?.detectedTopic||null,
-            sentimentLabel: analysis?.sentimentLabel||null,
-            sentimentScore: analysis?.sentimentScore||0,
-            biasLabel: analysis?.biasLabel||null,
-            biasScore: analysis?.biasScore ||0,
-            confidenceScore: analysis?.confidenceScore||0,
-            explanation: analysis?.explanation ||null,
-            evidenceLines: addHighlights(articleText, analysis?.evidenceLines ||[]),
-            submittedBy: userId ||null,
+            content: articleText,
+            detectedTopic: analysis?.detectedTopic || null,
+            sentimentLabel: analysis?.sentimentLabel || null,
+            sentimentScore: analysis?.sentimentScore || 0,
+            biasLabel: analysis?.biasLabel || null,
+            biasScore: analysis?.biasScore || 0,
+            confidenceScore: analysis?.confidenceScore || 0,
+            explanation: analysis?.explanation || null,
+            evidenceLines: highlights,
+            highlights,
+            analysis: {
+                bias: {
+                    label: analysis?.biasLabel || 'Unknown',
+                    score: analysis?.biasScore || 0
+                },
+                sentiment: {
+                    label: analysis?.sentimentLabel || 'Unknown',
+                    score: analysis?.sentimentScore || 0
+                }
+            },
+            submittedBy: userId || null,
+            status: 'analyzed',
             createdAt: new Date()
         }
-        //TODO add to user array, add article to db
+
+        const savedArticle = saveArticle(articleObject)
 
         return res.status(200).json({
             message: 'Article analyzed successfully.',
-            article: articleObject
+            article: savedArticle
         })
 
     }catch (e){

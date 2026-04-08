@@ -1,11 +1,82 @@
 import 'dotenv/config'
 import OpenAI from 'openai'
 
+const client = process.env.GROQ_API_KEY
+  ? new OpenAI({
+      apiKey: process.env.GROQ_API_KEY,
+      baseURL: 'https://api.groq.com/openai/v1'
+    })
+  : null
 
-const client = new OpenAI({
-  apiKey: process.env.GROQ_API_KEY,
-  baseURL: 'https://api.groq.com/openai/v1'
-})
+const POSITIVE_WORDS = ['praised', 'progress', 'breakthrough', 'success', 'improve', 'improved', 'positive', 'promising', 'striking']
+const NEGATIVE_WORDS = ['crisis', 'fail', 'failed', 'failure', 'decline', 'negative', 'angry', 'devastating', 'horrifying']
+const TOPIC_KEYWORDS = {
+  Politics: ['election', 'senate', 'congress', 'president', 'minister', 'campaign', 'policy'],
+  Climate: ['climate', 'emissions', 'wildfire', 'carbon', 'temperature'],
+  Entertainment: ['movie', 'music', 'celebrity', 'festival', 'show'],
+  Technology: ['ai', 'software', 'chip', 'startup', 'device', 'app'],
+  Education: ['school', 'student', 'teacher', 'university', 'campus'],
+  Business: ['market', 'stocks', 'company', 'economy', 'earnings', 'ceo'],
+  Sports: ['game', 'team', 'season', 'player', 'coach', 'tournament'],
+  Health: ['hospital', 'health', 'disease', 'medical', 'vaccine'],
+  Science: ['nasa', 'scientist', 'scientists', 'research', 'space', 'artemis', 'experiment']
+}
+
+function clampScore(value, min, max) {
+  return Math.max(min, Math.min(max, value))
+}
+
+function matchesKeyword(normalizedText, keyword) {
+  const escapedKeyword = keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  return new RegExp(`\\b${escapedKeyword}\\b`, 'i').test(normalizedText)
+}
+
+function getFallbackTopic(articleText) {
+  const normalizedText = articleText.toLowerCase()
+
+  for (const [topic, keywords] of Object.entries(TOPIC_KEYWORDS)) {
+    if (keywords.some((keyword) => matchesKeyword(normalizedText, keyword))) {
+      return topic
+    }
+  }
+
+  return 'General'
+}
+
+function extractEvidenceQuotes(articleText) {
+  return articleText
+    .split(/(?<=[.!?])\s+/)
+    .map((sentence) => sentence.trim())
+    .filter(Boolean)
+    .slice(0, 2)
+}
+
+function getBiasLabel(score) {
+  if (score <= -0.7) return 'Left'
+  if (score <= -0.25) return 'Center-Left'
+  if (score >= 0.7) return 'Right'
+  if (score >= 0.25) return 'Center-Right'
+  return 'Center'
+}
+
+function buildFallbackAnalysis(articleText, reason = 'Heuristic analysis generated locally.') {
+  const normalizedText = articleText.toLowerCase()
+  const positiveHits = POSITIVE_WORDS.filter((word) => normalizedText.includes(word)).length
+  const negativeHits = NEGATIVE_WORDS.filter((word) => normalizedText.includes(word)).length
+  const sentimentScore = clampScore(Number(((positiveHits - negativeHits) / 5).toFixed(2)), -1, 1)
+  const biasScore = clampScore(Number(((normalizedText.match(/should|must|clearly|obviously|critics say|many believe/g) || []).length / 10).toFixed(2)), 0, 1)
+
+  return {
+    sentimentLabel: sentimentScore > 0.2 ? 'Positive' : sentimentScore < -0.2 ? 'Negative' : 'Neutral',
+    sentimentScore,
+    detectedTopic: getFallbackTopic(articleText),
+    biasLabel: getBiasLabel(biasScore),
+    biasScore,
+    confidenceScore: 0.35,
+    explanation: reason,
+    evidenceLines: extractEvidenceQuotes(articleText)
+  }
+}
 
 export async function analyzeWithLLM(articleText){
     const prompt = `
@@ -46,6 +117,10 @@ export async function analyzeWithLLM(articleText){
         """
         `
 
+    if (!client) {
+        return buildFallbackAnalysis(articleText, 'GROQ_API_KEY is not configured, so a local heuristic analysis was used.')
+    }
+
     try {
         const completion = await client.chat.completions.create({
             model: 'llama-3.1-8b-instant',
@@ -67,32 +142,14 @@ export async function analyzeWithLLM(articleText){
             console.log('Could not parse LLM output:')
             console.log(text)
 
-            return {
-                sentimentLabel: 'Unknown',
-                sentimentScore: 0,
-                biasLabel: 'Unknown',
-                detectedTopic: 'Unknown',
-                biasScore: 0,
-                confidenceScore: 0,
-                explanation: 'LLM returned invalid JSON.',
-                evidenceLines: []
-            }
+            return buildFallbackAnalysis(articleText, 'LLM returned invalid JSON, so a local heuristic analysis was used.')
         }
 
         return parsed
 
     } catch (err) {
         console.error('LLM error:', err)
-        return {
-        sentimentLabel: 'Unknown',
-        sentimentScore: 0,
-        biasLabel: 'Unknown',
-        detectedTopic:'Unknown',
-        biasScore: 0,
-        confidenceScore: 0,
-        explanation: 'LLM analysis failed.',
-        evidenceLines: []
-        }
+        return buildFallbackAnalysis(articleText, 'LLM analysis failed, so a local heuristic analysis was used.')
     }
 
 }
@@ -114,21 +171,26 @@ function repairLikelyJson(text) {
 }
 
 
-export function addHighlights(body, highlights=[]){
+export function addHighlights(body, highlights = [], description = 'Potential bias indicator highlighted by the model.') {
     return highlights.map((highlight) => {
-        const startIndex = findMatch(body,highlight)
+        const startIndex = findMatch(body, highlight)
 
         if (startIndex === -1) {
+            return {
+                highlight,
+                startIndex: null,
+                endIndex: null,
+                type: 'bias-indicator',
+                description
+            }
+        }
+
         return {
             highlight,
-            startIndex: null,
-            endIndex: null
-        }
-        }
-        return {
-        highlight,
-        startIndex,
-        endIndex: startIndex + highlight.length
+            startIndex,
+            endIndex: startIndex + highlight.length,
+            type: 'bias-indicator',
+            description
         }
     })
 }
