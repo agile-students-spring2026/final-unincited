@@ -49,6 +49,23 @@
   color: var(--text-muted);
   font-size: 12px;
 }
+.login-status {
+    margin-top: 12px;
+    font-size: 14px;
+}
+
+.login-error {
+    color: #b00020;
+}
+
+.login-status {
+    margin-top: 12px;
+    font-size: 14px;
+}
+
+.login-error {
+    color: #b00020;
+}
 
 .forgot-password {
   font-size: 11px;

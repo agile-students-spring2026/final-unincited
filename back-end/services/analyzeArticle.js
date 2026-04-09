@@ -111,6 +111,9 @@ const HIGHLIGHT_TAXONOMY = {
   }
 }
 
+const validDetectedTopic = ["Politics","Climate","Entertainment","Technology" ,"Education","Business","Sports","Health","Science","General"]
+const validBiasLabel = ["Left", "Center-Left", "Center","Center-Right","Right"]
+const validSentimentLabel = ["Positive","Neutral","Negative"]
 const TAXONOMY_KEYS = Object.keys(HIGHLIGHT_TAXONOMY)
 
 function getClient() {
@@ -143,10 +146,10 @@ export async function analyzeWithLLM(articleText){
         Analyze the article and return EXACTLY this JSON format:
 
         {
-        "sentimentLabel": "Positive | Neutral | Negative",
+        "sentimentLabel": "${validSentimentLabel}",
         "sentimentScore": number,
-        "detectedTopic": "Politics | Climate | Entertainment | Technology | Education | Business | Sports | Health | Science | General",
-        "biasLabel": "Left | Center-Left | Center | Center-Right | Right",
+        "detectedTopic":"${validDetectedTopic}",
+        "biasLabel": "${validBiasLabel}",
         "biasScore": number,
         "confidenceScore": number,
         "explanation": "string",
@@ -173,9 +176,9 @@ export async function analyzeWithLLM(articleText){
         - Use at least 4 different taxonomyTag values when possible
         - taxonomyTag must be one of: ${taxonomyOptions}
         - reason must explain why the quote fits the taxonomy, in <= 20 words
-        - only choose ONE of the options for sentimentLabel
-        - only choose ONE of the options for biasLabel
-        - only choose ONE of the options for detectedTopic
+        - sentimentLabel must be one of: ${validSentimentLabel}
+        - biasLabel must be one of: ${validBiasLabel}
+        - detectedTopic must be one of: ${validDetectedTopic}
         - Right means right-wing, republican, conservative; Left means left-wing, democratic, liberal
         - Use only standard ASCII double quotes (") for all JSON strings.
         - Do not use smart quotes.

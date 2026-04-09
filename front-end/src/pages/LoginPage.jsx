@@ -15,25 +15,31 @@ function LoginPage() {
   }
 
   const onSubmit = async (event) => {
-    event.preventDefault()
-    setError('')
-    setLoading(true)
+    event.preventDefault();
+    setError("");
+    setLoading(true);
 
     try {
-      const data = await apiRequest('/auth/login', {
-        method: 'POST',
+      const data = await apiRequest("/auth/login", {
+        method: "POST",
         body: JSON.stringify(form),
-      })
+      });
 
-      localStorage.setItem('authToken', data.token)
-      localStorage.setItem('currentUser', JSON.stringify(data.user))
-      navigate('/dashboard')
+      localStorage.setItem("authToken", data.token);
+      localStorage.setItem("currentUser", JSON.stringify(data.user));
+      navigate("/dashboard");
     } catch (err) {
-      setError(err.message)
+      if (err.message === "Invalid credentials") {
+        setError("Invalid email or password");
+      } else if (err.message.includes("Failed to fetch")) {
+        setError("Unable to connect. Please try again.");
+      } else {
+        setError("Something went wrong. Please try again.");
+      }
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <main className="login-container">
