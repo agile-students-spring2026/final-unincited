@@ -16,6 +16,22 @@ describe('safeParseJSON', () => {
     expect(result.sentimentLabel).to.equal('Positive')
   })
 
+  it('should parse JSON with smart quotes inside string values', () => {
+    const payload = '{"quote":"US forces will remain “in place” until a full agreement is reached."}'
+    const result = safeParseJSON(payload)
+
+    expect(result).to.be.an('object')
+    expect(result.quote).to.include('“in place”')
+  })
+
+  it('should parse JSON wrapped in markdown code fences', () => {
+    const payload = '```json\n{"sentimentLabel":"Neutral"}\n```'
+    const result = safeParseJSON(payload)
+
+    expect(result).to.be.an('object')
+    expect(result.sentimentLabel).to.equal('Neutral')
+  })
+
   it('should return null for invalid JSON', () => {
     const result = safeParseJSON('not valid json')
     expect(result).to.equal(null)
@@ -38,5 +54,31 @@ describe('addHighlights', () => {
 
     expect(result[0].startIndex).to.equal(null)
     expect(result[0].endIndex).to.equal(null)
+  })
+
+  it('should preserve taxonomy metadata when highlight objects are provided', () => {
+    const body = 'Many believe this policy will inevitably destroy the neighborhood.'
+    const result = addHighlights(body, [
+      {
+        quote: 'will inevitably destroy the neighborhood',
+        taxonomyTag: 'speculative-projection',
+        reason: 'Treats a hypothetical outcome as guaranteed.'
+      }
+    ])
+
+    expect(result[0].taxonomyTag).to.equal('speculative-projection')
+    expect(result[0].taxonomyLabel).to.equal('Speculative Projection')
+    expect(result[0].colorHex).to.equal('#A9DCD4')
+    expect(result[0].startIndex).to.be.a('number')
+    expect(result[0].endIndex).to.be.greaterThan(result[0].startIndex)
+  })
+
+  it('should map repeated quote values to later occurrences in sequence', () => {
+    const body = 'policy policy policy policy'
+    const result = addHighlights(body, ['policy', 'policy', 'policy'])
+
+    expect(result[0].startIndex).to.equal(0)
+    expect(result[1].startIndex).to.equal(7)
+    expect(result[2].startIndex).to.equal(14)
   })
 })

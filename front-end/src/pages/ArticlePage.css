@@ -166,24 +166,120 @@
 /* Highlight colors for bias indicators */
 .highlight {
   padding: 1px 3px;
+  border-radius: 4px;
 }
 
-.highlight-tone-0 {
-  background-color: #f1c7bf;
+.highlight-affective-manipulation {
+  background-color: #f4a7af;
+  color: var(--text-main);
 }
 
-.highlight-tone-1 {
-  background-color: #edd8b0;
+.highlight-lexical-distortion {
+  background-color: #f7c9a3;
+  color: var(--text-main);
 }
 
-.highlight-tone-2 {
-  background-color: #e4d8b4;
+.highlight-vague-attribution {
+  background-color: #f3e2a2;
+  color: var(--text-main);
 }
 
-.highlight-tone-3 {
-  background-color: #e6cfca;
+.highlight-evidentiary-void {
+  background-color: #cfe7a6;
+  color: var(--text-main);
 }
 
-.highlight-tone-4 {
-  background-color: #f2d8d3;
+.highlight-speculative-projection {
+  background-color: #a9dcd4;
+  color: var(--text-main);
+}
+
+.highlight-binary-forcing {
+  background-color: #a9e3ee;
+  color: var(--text-main);
+}
+
+.highlight-reductive-framing {
+  background-color: #afcdee;
+  color: var(--text-main);
+}
+
+.highlight-ad-hominem-attack {
+  background-color: #cfb7e8;
+  color: var(--text-main);
+}
+
+.highlight-false-equivalence {
+  background-color: #f5b2d5;
+  color: var(--text-main);
+}
+
+.highlight-prescriptive-imperative {
+  background-color: #c8cdd2;
+  color: var(--text-main);
+}
+
+.highlight-key,
+.evidence-notes {
+  background-color: var(--bg-soft);
+  border-radius: var(--radius-soft);
+  padding: 14px;
+}
+
+.highlight-key-title,
+.evidence-notes-title {
+  margin: 0 0 10px;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.highlight-key-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.highlight-chip {
+  display: inline-flex;
+  align-items: center;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: 999px;
+}
+
+.evidence-notes-list {
+  display: grid;
+  gap: 10px;
+}
+
+.evidence-note {
+  padding: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 10px;
+  background: #fff;
+}
+
+.evidence-note-tag {
+  display: inline-flex;
+  align-items: center;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 999px;
+}
+
+.evidence-note-quote {
+  margin: 8px 0 6px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text-main);
+}
+
+.evidence-note-reason {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--text-muted);
 }

@@ -9,6 +9,24 @@ import {preprocessText, extractMetadata, extractArticleContent} from '../service
 import { analyzeWithLLM, addHighlights} from '../services/analyzeArticle.js'
 const router = express.Router()
 
+function getNormalizedHttpUrl(input) {
+    if (!input || typeof input !== 'string') return null
+
+    const trimmed = input.trim()
+    const matches = trimmed.match(/https?:\/\/[^\s"'<>`]+/gi)
+    const candidate = matches?.length ? matches[matches.length - 1] : trimmed
+
+    try {
+        const parsed = new URL(candidate)
+        if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
+            return null
+        }
+        return parsed.toString()
+    } catch {
+        return null
+    }
+}
+
 
 router.post('/',async(req,res)=>{
     try {
@@ -17,8 +35,15 @@ router.post('/',async(req,res)=>{
             return res.status(400).json({ error: 'URL is required.' })
         }
 
+        const normalizedUrl = getNormalizedHttpUrl(url)
+        if (!normalizedUrl) {
+            return res.status(400).json({
+                error: 'Please provide a valid article URL starting with http:// or https://.'
+            })
+        }
+
         //get html of webpage
-        const response = await axios.get(url, {
+        const response = await axios.get(normalizedUrl, {
             headers: {
                 'User-Agent':
                 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36'
@@ -26,8 +51,8 @@ router.post('/',async(req,res)=>{
             timeout: 10000
         })
         const html = response.data
-        const metadata = extractMetadata(html,url)
-        const articleContent = extractArticleContent(html,url)
+        const metadata = extractMetadata(html,normalizedUrl)
+        const articleContent = extractArticleContent(html,normalizedUrl)
         const articleText = preprocessText(articleContent.textContent || "")
         if(!articleText){
             return res.status(422).json({error:"could not extract article text from URL"})
@@ -38,7 +63,7 @@ router.post('/',async(req,res)=>{
 
         const articleObject = {
             id : crypto.randomUUID(),
-            url,
+            url: normalizedUrl,
             title: articleContent.title || metadata.title || title,
             source: metadata.source,
             author:metadata.author,
