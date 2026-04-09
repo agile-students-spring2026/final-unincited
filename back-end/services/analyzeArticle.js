@@ -3,6 +3,8 @@ import OpenAI from 'openai'
 
 let missingKeyWarned = false
 const TARGET_HIGHLIGHT_COUNT = 10
+const MAX_HIGHLIGHT_COUNT = 60
+const MAX_PROMPT_CHARS = 12000
 const STOP_WORDS = new Set([
   'the', 'a', 'an', 'and', 'or', 'but', 'if', 'then', 'than', 'that', 'this', 'these', 'those',
   'to', 'of', 'in', 'on', 'for', 'with', 'from', 'as', 'at', 'by', 'it', 'its', 'is', 'are',
@@ -130,6 +132,7 @@ function getClient() {
 
 export async function analyzeWithLLM(articleText){
   const taxonomyOptions = TAXONOMY_KEYS.join(' | ')
+  const articleForPrompt = buildArticleContextWindow(articleText)
     const prompt = `
         You are a strict JSON generator. Do NOT include any text outside JSON.
         Return ONLY valid JSON.
@@ -161,7 +164,10 @@ export async function analyzeWithLLM(articleText){
         - biasScore and confidenceScore must be between 0 and 1
         - evidenceLines MUST use exact quotes copied from the article text
         - evidenceLines should only include genuinely problematic fragments
-        - Return EXACTLY 10 evidenceLines whenever article length allows
+        - Return at least 10 evidenceLines whenever article length allows
+        - Aim for statistical coverage of roughly one highlight per paragraph
+        - Spread evidenceLines across the full article (beginning, middle, and end)
+        - If section delimiters like [MIDDLE SECTION] appear, treat them as separators and never quote them
         - Prefer one specific quoted word or very short phrase per sentence
         - Use at least 4 different taxonomyTag values when possible
         - taxonomyTag must be one of: ${taxonomyOptions}
@@ -178,7 +184,7 @@ export async function analyzeWithLLM(articleText){
 
         Article:
         """
-        ${articleText.slice(0, 3000)}
+        ${articleForPrompt}
         """
         `
 
@@ -289,41 +295,45 @@ function normalizeEvidenceLines(evidenceLines = [], articleText = '') {
 }
 
 function expandEvidenceCoverage(existingLines = [], articleText = '') {
+  const targetCount = getDynamicTargetCount(articleText)
   const working = existingLines
     .map((line) => sanitizeLine(line))
     .filter(Boolean)
 
-  if (working.length >= TARGET_HIGHLIGHT_COUNT) {
-    return working.slice(0, TARGET_HIGHLIGHT_COUNT)
-  }
-
   if (!articleText || typeof articleText !== 'string') {
-    return working.slice(0, TARGET_HIGHLIGHT_COUNT)
+    return working.slice(0, targetCount)
   }
 
-  const generated = buildSentenceDrivenHighlights(articleText)
-  const seen = new Set(working.map((line) => `${normalizeForKey(line.quote)}|${line.taxonomyTag}`))
+  const paragraphGenerated = buildParagraphDrivenHighlights(articleText, targetCount)
+  const sentenceGenerated = buildSentenceDrivenHighlights(articleText, targetCount)
+  const merged = []
+  const seen = new Set()
 
-  for (const line of generated) {
-    if (working.length >= TARGET_HIGHLIGHT_COUNT) break
-    const key = `${normalizeForKey(line.quote)}|${line.taxonomyTag}`
-    if (seen.has(key)) continue
-    seen.add(key)
-    working.push(line)
-  }
+  // Keep some original model highlights first, but reserve room for paragraph coverage.
+  const existingQuota = Math.min(working.length, Math.ceil(targetCount * 0.6))
+  addUniqueLines(merged, seen, working.slice(0, existingQuota), targetCount)
+  addUniqueLines(merged, seen, paragraphGenerated, targetCount)
+  addUniqueLines(merged, seen, working.slice(existingQuota), targetCount)
+  addUniqueLines(merged, seen, sentenceGenerated, targetCount)
 
-  // Last resort: duplicate sentence words with alternating taxonomy to guarantee 10 visible highlights.
+  // Last resort: duplicate lexical candidates with alternating taxonomy to guarantee target coverage.
   let fillerIndex = 0
   const fillerTaxonomy = ['lexical-distortion', 'vague-attribution', 'evidentiary-void', 'speculative-projection']
   const fillerWords = extractCandidateWords(articleText)
-  while (working.length < TARGET_HIGHLIGHT_COUNT && fillerWords.length > 0) {
+  while (merged.length < targetCount && fillerWords.length > 0) {
     const word = fillerWords[fillerIndex % fillerWords.length]
     const tag = fillerTaxonomy[fillerIndex % fillerTaxonomy.length]
-    working.push(createTaxonomyLine(word, tag, 'Sentence-level cue selected to increase annotation coverage.'))
+    addUniqueLines(
+      merged,
+      seen,
+      [createTaxonomyLine(word, tag, buildFallbackReason(tag, word))],
+      targetCount
+    )
     fillerIndex += 1
+    if (fillerIndex > fillerWords.length * 2) break
   }
 
-  return working.slice(0, TARGET_HIGHLIGHT_COUNT)
+  return merged.slice(0, targetCount)
 }
 
 function classifySentence(sentence) {
@@ -351,8 +361,59 @@ function createTaxonomyLine(quote, taxonomyTag, reason) {
     taxonomyTag,
     taxonomyLabel: taxonomy.label,
     colorHex: taxonomy.colorHex,
-    reason
+    reason: normalizeReason(reason, taxonomyTag, quote)
   }
+}
+
+function normalizeReason(reason, taxonomyTag, quote = '') {
+  if (typeof reason === 'string' && reason.trim()) {
+    return reason.trim()
+  }
+  return buildFallbackReason(taxonomyTag, quote)
+}
+
+function buildFallbackReason(taxonomyTag, quote = '') {
+  const q = formatQuote(quote)
+
+  if (taxonomyTag === 'affective-manipulation') {
+    return `${q}uses emotional intensity that can steer reaction over evidence.`
+  }
+  if (taxonomyTag === 'lexical-distortion') {
+    return `${q}uses evaluative wording rather than neutral description.`
+  }
+  if (taxonomyTag === 'vague-attribution') {
+    return `${q}attributes claims vaguely without a clearly named source.`
+  }
+  if (taxonomyTag === 'evidentiary-void') {
+    return `${q}presents a claim without direct support in nearby text.`
+  }
+  if (taxonomyTag === 'speculative-projection') {
+    return `${q}frames a hypothetical outcome as likely or inevitable.`
+  }
+  if (taxonomyTag === 'binary-forcing') {
+    return `${q}compresses a complex issue into limited opposing options.`
+  }
+  if (taxonomyTag === 'reductive-framing') {
+    return `${q}simplifies an opposing position into a reduced caricature.`
+  }
+  if (taxonomyTag === 'ad-hominem-attack') {
+    return `${q}targets people or identity instead of argument substance.`
+  }
+  if (taxonomyTag === 'false-equivalence') {
+    return `${q}treats unequal situations as if they are equivalent.`
+  }
+  if (taxonomyTag === 'prescriptive-imperative') {
+    return `${q}pushes a required conclusion instead of open analysis.`
+  }
+
+  return `${q}contains language that may influence interpretation.`
+}
+
+function formatQuote(quote = '') {
+  const clean = (quote || '').toString().trim().replace(/\s+/g, ' ')
+  if (!clean) return 'This fragment '
+  const clipped = clean.length > 52 ? `${clean.slice(0, 49)}...` : clean
+  return `"${clipped}" `
 }
 
 function splitIntoSentences(text) {
@@ -360,6 +421,38 @@ function splitIntoSentences(text) {
     .split(/(?<=[.!?])\s+/)
     .map((part) => part.trim())
     .filter((part) => part.length >= 8 && part.length <= 320)
+}
+
+function splitIntoParagraphs(text) {
+  const rawParagraphs = text
+    .split(/\n{2,}/)
+    .map((part) => part.trim())
+    .filter((part) => part.length >= 20)
+
+  if (rawParagraphs.length > 1) {
+    return rawParagraphs
+  }
+
+  const sentences = splitIntoSentences(text)
+  if (sentences.length === 0) {
+    return text.trim() ? [text.trim()] : []
+  }
+
+  const estimatedParagraphs = Math.max(1, Math.min(MAX_HIGHLIGHT_COUNT, Math.ceil(sentences.length / 3)))
+  const chunkSize = Math.max(1, Math.ceil(sentences.length / estimatedParagraphs))
+  const syntheticParagraphs = []
+
+  for (let i = 0; i < sentences.length; i += chunkSize) {
+    syntheticParagraphs.push(sentences.slice(i, i + chunkSize).join(' '))
+  }
+
+  return syntheticParagraphs
+}
+
+function getDynamicTargetCount(articleText = '') {
+  const paragraphCount = splitIntoParagraphs(articleText).length
+  const clampedParagraphTarget = Math.min(MAX_HIGHLIGHT_COUNT, Math.max(TARGET_HIGHLIGHT_COUNT, paragraphCount))
+  return clampedParagraphTarget
 }
 
 function normalizeForKey(text = '') {
@@ -379,18 +472,19 @@ function sanitizeLine(line) {
     colorHex: taxonomy.colorHex,
     reason: typeof line.reason === 'string' && line.reason.trim()
       ? line.reason.trim()
-      : 'Potential framing cue.'
+      : buildFallbackReason(taxonomyTag, line.quote)
   }
 }
 
-function buildSentenceDrivenHighlights(articleText) {
+function buildSentenceDrivenHighlights(articleText, targetCount = getDynamicTargetCount(articleText)) {
   const sentences = splitIntoSentences(articleText)
+  const prioritizedSentences = buildCoverageOrderedList(sentences, targetCount * 3)
   const results = []
   const usedWords = new Set()
 
   // Pass 1: rule-based taxonomy hits.
-  for (const sentence of sentences) {
-    if (results.length >= TARGET_HIGHLIGHT_COUNT) break
+  for (const sentence of prioritizedSentences) {
+    if (results.length >= targetCount) break
     const classified = classifySentence(sentence)
     if (!classified) continue
     const sanitized = sanitizeLine(classified)
@@ -400,24 +494,107 @@ function buildSentenceDrivenHighlights(articleText) {
   }
 
   // Pass 2: one specific word per sentence.
-  for (const sentence of sentences) {
-    if (results.length >= TARGET_HIGHLIGHT_COUNT) break
+  for (const sentence of prioritizedSentences) {
+    if (results.length >= targetCount) break
     const word = extractSpecificWord(sentence, usedWords)
     if (!word) continue
     usedWords.add(normalizeForKey(word))
-    results.push(createTaxonomyLine(word, 'lexical-distortion', 'Specific lexical choice that can influence interpretation.'))
+    results.push(createTaxonomyLine(word, 'lexical-distortion', buildFallbackReason('lexical-distortion', word)))
   }
 
   // Pass 3: article-wide candidates if sentence pass is still short.
   for (const word of extractCandidateWords(articleText)) {
-    if (results.length >= TARGET_HIGHLIGHT_COUNT) break
+    if (results.length >= targetCount) break
     const key = normalizeForKey(word)
     if (!key || usedWords.has(key)) continue
     usedWords.add(key)
-    results.push(createTaxonomyLine(word, 'evidentiary-void', 'Claim-support signal selected for denser review coverage.'))
+    results.push(createTaxonomyLine(word, 'evidentiary-void', buildFallbackReason('evidentiary-void', word)))
   }
 
-  return results.slice(0, TARGET_HIGHLIGHT_COUNT)
+  return results.slice(0, targetCount)
+}
+
+function buildParagraphDrivenHighlights(articleText, targetCount) {
+  const paragraphs = splitIntoParagraphs(articleText)
+  const selectedParagraphs = selectEvenlyDistributedItems(paragraphs, targetCount)
+  const results = []
+  const usedWords = new Set()
+  const usedKeys = new Set()
+
+  for (const paragraph of selectedParagraphs) {
+    const paragraphSentences = splitIntoSentences(paragraph)
+    let added = null
+
+    for (const sentence of paragraphSentences) {
+      const classified = sanitizeLine(classifySentence(sentence))
+      if (classified) {
+        added = classified
+        break
+      }
+    }
+
+    if (!added) {
+      const word = extractSpecificWord(paragraph, usedWords)
+      if (!word) continue
+      added = createTaxonomyLine(word, 'lexical-distortion', buildFallbackReason('lexical-distortion', word))
+    }
+
+    const key = `${normalizeForKey(added.quote)}|${added.taxonomyTag}`
+    if (usedKeys.has(key)) continue
+    usedWords.add(normalizeForKey(added.quote))
+    usedKeys.add(key)
+    results.push(added)
+  }
+
+  return results
+}
+
+function buildCoverageOrderedList(sentences, preferredCount) {
+  const spread = selectEvenlyDistributedItems(sentences, preferredCount)
+  const spreadSet = new Set(spread)
+  const remaining = sentences.filter((sentence) => !spreadSet.has(sentence))
+  return [...spread, ...remaining]
+}
+
+function selectEvenlyDistributedItems(items = [], count = 0) {
+  if (!Array.isArray(items) || items.length === 0) return []
+  if (count >= items.length) return [...items]
+  if (count <= 0) return []
+
+  const selected = []
+  for (let i = 0; i < count; i += 1) {
+    const index = Math.floor((i * items.length) / count)
+    selected.push(items[index])
+  }
+
+  return selected
+}
+
+function addUniqueLines(target, seen, candidates, cap) {
+  for (const candidate of candidates) {
+    if (!candidate || target.length >= cap) break
+    const sanitized = sanitizeLine(candidate)
+    if (!sanitized) continue
+    const key = `${normalizeForKey(sanitized.quote)}|${sanitized.taxonomyTag}`
+    if (seen.has(key)) continue
+    seen.add(key)
+    target.push(sanitized)
+  }
+}
+
+function buildArticleContextWindow(articleText = '') {
+  const text = (articleText || '').trim()
+  if (text.length <= MAX_PROMPT_CHARS) {
+    return text
+  }
+
+  const sectionSize = Math.max(1200, Math.floor((MAX_PROMPT_CHARS - 120) / 3))
+  const start = text.slice(0, sectionSize)
+  const midStart = Math.max(0, Math.floor(text.length / 2) - Math.floor(sectionSize / 2))
+  const middle = text.slice(midStart, midStart + sectionSize)
+  const end = text.slice(-sectionSize)
+
+  return `${start}\n...[MIDDLE SECTION]...\n${middle}\n...[END SECTION]...\n${end}`
 }
 
 function extractSpecificWord(sentence, usedWords = new Set()) {
