@@ -34,6 +34,9 @@ router.post('/',async(req,res)=>{
         }
         //llm call
         const analysis = await analyzeWithLLM(articleText)
+        if (analysis.explanation == "LLM analysis failed."){
+            throw new Error("Analysis failed")
+        }
         
 
         const articleObject = {
