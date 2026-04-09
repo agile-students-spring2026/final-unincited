@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { apiRequest } from '../lib/api'
+import './ForgotPasswordPage.css'
 
 function ForgotPasswordPage() {
   const [email, setEmail] = useState('')
@@ -24,11 +25,14 @@ function ForgotPasswordPage() {
   }
 
   return (
-    <main>
-      <h1>Forgot Password</h1>
-      <form onSubmit={onSubmit}>
+    <main className="forgot-container">
+      <form className="forgot-box" onSubmit={onSubmit}>
+        <h1 className="forgot-title">Forgot Password</h1>
+        <p className="forgot-subtext">Enter your email and we will send reset instructions.</p>
+
         <label htmlFor="email">Email</label>
         <input
+          className="forgot-input"
           id="email"
           name="email"
           type="email"
@@ -36,13 +40,18 @@ function ForgotPasswordPage() {
           onChange={(event) => setEmail(event.target.value)}
           required
         />
-        <button type="submit">Send Reset Request</button>
+
+        <button className="forgot-button" type="submit">Send Reset Request</button>
+
+        <p className="back-to-login">
+          <Link className="back-to-login" to="/">
+            Back to login
+          </Link>
+        </p>
       </form>
-      {message ? <p>{message}</p> : null}
-      {error ? <p>{error}</p> : null}
-      <p>
-        <Link to="/">Back to login</Link>
-      </p>
+
+      {message ? <p className="forgot-status forgot-success">{message}</p> : null}
+      {error ? <p className="forgot-status forgot-error">{error}</p> : null}
     </main>
   )
 }
