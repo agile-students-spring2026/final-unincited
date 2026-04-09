@@ -3,6 +3,19 @@ import { useNavigate, useParams } from 'react-router-dom'
 import './ArticlePage.css'
 import { API_BASE_URL } from '../lib/api'
 
+const HIGHLIGHT_META = {
+  'affective-manipulation': { label: 'Affective Manipulation' },
+  'lexical-distortion': { label: 'Lexical Distortion' },
+  'vague-attribution': { label: 'Vague Attribution' },
+  'evidentiary-void': { label: 'Evidentiary Void' },
+  'speculative-projection': { label: 'Speculative Projection' },
+  'binary-forcing': { label: 'Binary Forcing' },
+  'reductive-framing': { label: 'Reductive Framing' },
+  'ad-hominem-attack': { label: 'Ad Hominem Attack' },
+  'false-equivalence': { label: 'False Equivalence' },
+  'prescriptive-imperative': { label: 'Prescriptive Imperative' },
+}
+
 export default function ArticlePage() {
   const navigate = useNavigate()
   const { id } = useParams()
@@ -65,7 +78,30 @@ export default function ArticlePage() {
             coverImageUrl:
               raw.thumbnail || `https://picsum.photos/seed/${raw.id}/640/420`,
             content: raw.articleText || "",
-            highlights: raw.evidenceLines || [],
+            highlights: Array.isArray(raw.evidenceLines)
+              ? raw.evidenceLines.map((line) => {
+                  const quote = typeof line === 'string'
+                    ? line
+                    : (line.quote || line.highlight || '')
+                  const taxonomyTag = typeof line === 'object' && line.taxonomyTag
+                    ? line.taxonomyTag
+                    : 'lexical-distortion'
+
+                  return {
+                    ...line,
+                    quote,
+                    highlight: quote,
+                    taxonomyTag,
+                    taxonomyLabel:
+                      (typeof line === 'object' && line.taxonomyLabel) ||
+                      HIGHLIGHT_META[taxonomyTag]?.label ||
+                      'Lexical Distortion',
+                    reason:
+                      (typeof line === 'object' && (line.reason || line.description)) ||
+                      '',
+                  }
+                })
+              : [],
             analysis: {
               sentiment: {
                 label: raw.sentimentLabel || "NEUTRAL",
@@ -122,7 +158,7 @@ export default function ArticlePage() {
     const parts = []
     let cursor = 0
 
-    highlights.forEach((highlight, index) => {
+    highlights.forEach((highlight) => {
       const start = Math.max(0, Math.min(content.length, highlight.startIndex))
       const end = Math.max(start, Math.min(content.length, highlight.endIndex))
 
@@ -131,11 +167,17 @@ export default function ArticlePage() {
       }
 
       if (end > start) {
+        const taxonomyTag = highlight.taxonomyTag || 'lexical-distortion'
+        const taxonomyLabel = highlight.taxonomyLabel || HIGHLIGHT_META[taxonomyTag]?.label || 'Lexical Distortion'
+        const reason = highlight.reason || highlight.description || ''
+
         parts.push({
           type: 'highlight',
           value: content.slice(start, end),
-          cssClass: `highlight-tone-${index % 5}`,
-          description: highlight.description || '',
+          cssClass: `highlight-${taxonomyTag}`,
+          taxonomyLabel,
+          taxonomyTag,
+          description: reason,
         })
       }
 
@@ -148,6 +190,27 @@ export default function ArticlePage() {
 
     return parts
   }, [article])
+
+  const evidenceList = useMemo(() => {
+    if (!Array.isArray(article?.highlights)) return []
+
+    return article.highlights
+      .filter((highlight) => highlight.startIndex != null && highlight.endIndex != null)
+      .map((highlight) => {
+        const taxonomyTag = highlight.taxonomyTag || 'lexical-distortion'
+        return {
+          ...highlight,
+          taxonomyTag,
+          taxonomyLabel: highlight.taxonomyLabel || HIGHLIGHT_META[taxonomyTag]?.label || 'Lexical Distortion',
+          reason: highlight.reason || highlight.description || 'No explanation provided.',
+        }
+      })
+  }, [article])
+
+  const usedTaxonomyTags = useMemo(() => {
+    const seen = new Set(evidenceList.map((item) => item.taxonomyTag))
+    return Array.from(seen)
+  }, [evidenceList])
 
   const toSliderPosition = (score) => `${((score + 1) / 2) * 100}%`
 
@@ -245,7 +308,7 @@ export default function ArticlePage() {
                 <span
                   key={`highlight-${index}`}
                   className={`highlight ${part.cssClass}`}
-                  title={part.description}
+                  title={`${part.taxonomyLabel}: ${part.description}`}
                 >
                   {part.value}
                 </span>
@@ -255,6 +318,36 @@ export default function ArticlePage() {
             )}
           </p>
         </div>
+
+        {usedTaxonomyTags.length > 0 && (
+          <div className="highlight-key">
+            <h2 className="highlight-key-title">Highlight Key</h2>
+            <div className="highlight-key-grid">
+              {usedTaxonomyTags.map((tag) => (
+                <span key={tag} className={`highlight-chip highlight-${tag}`}>
+                  {HIGHLIGHT_META[tag]?.label || tag}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {evidenceList.length > 0 && (
+          <div className="evidence-notes">
+            <h2 className="evidence-notes-title">Evidence Notes</h2>
+            <div className="evidence-notes-list">
+              {evidenceList.map((item, idx) => (
+                <div className="evidence-note" key={`${item.startIndex}-${item.endIndex}-${idx}`}>
+                  <span className={`evidence-note-tag highlight-${item.taxonomyTag}`}>
+                    {item.taxonomyLabel}
+                  </span>
+                  <p className="evidence-note-quote">"{item.quote || item.highlight}"</p>
+                  <p className="evidence-note-reason">{item.reason}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )
