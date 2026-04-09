@@ -68,7 +68,7 @@ function AnalyticsPage() {
     })
   }, [articles, timeRange])
 
-  // Unique topics and outlets for dropdowns and color mapping
+  // unique topics and outlets for dropdowns and color mapping
   const topics = useMemo(() => {
     const unique = [...new Set(timeFiltered.map(a => a.detectedTopic).filter(Boolean))]
     return unique.sort()
