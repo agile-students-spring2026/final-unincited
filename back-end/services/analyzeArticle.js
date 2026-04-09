@@ -1,7 +1,6 @@
 import 'dotenv/config'
 import OpenAI from 'openai'
 
-
 const client = new OpenAI({
   apiKey: process.env.GROQ_API_KEY,
   baseURL: 'https://api.groq.com/openai/v1'
@@ -38,6 +37,8 @@ export async function analyzeWithLLM(articleText){
         - Right means right-wing, republican, conservative; Left means left-wing, democratic, liberal
         - Use only standard ASCII double quotes (") for all JSON strings.
         - Do not use smart quotes.
+        - Replace all smart quotes (“ ” ‘ ’) with regular quotes
+        - Escape any internal quotes using backslashes (\")
         - output must be a single complete JSON object
 
         Article:
@@ -60,7 +61,8 @@ export async function analyzeWithLLM(articleText){
         console.log("raw output: ",text)
 
         //try parsing safely
-        const parsed = safeParseJSON(text)
+        const cleaned = cleanLLMOutput(text)
+        const parsed = safeParseJSON(cleaned)
 
         //avoid null
         if (!parsed) {
@@ -96,6 +98,11 @@ export async function analyzeWithLLM(articleText){
     }
 
 }
+function cleanLLMOutput(text) {
+  return text
+    .replace(/\n/g, ' ')     // remove newlines
+    .trim()
+}
 export function safeParseJSON(text) {
     
     const repaired = repairLikelyJson(text.trim())
@@ -106,6 +113,7 @@ export function safeParseJSON(text) {
     return match ? JSON.parse(match[0]) : null
   }
 }
+
 function repairLikelyJson(text) {
   return text
     .replace(/[“”]/g, '"')
@@ -148,3 +156,4 @@ function findMatch(body, text) {
 
   return -1
 }
+
