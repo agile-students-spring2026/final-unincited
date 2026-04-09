@@ -43,7 +43,7 @@ export async function analyzeWithLLM(articleText){
 
         Rules:
         - sentimentScore must be between -1 and 1
-        - biasScore and confidenceScore must be between 0 and 1
+        - biasScore and confidenceScore must be between -1 and 1, where -1 is most left-leaning, and 1 is most right-leaning
         - evidenceLines MUST be exact quotes from the article
         - only choose ONE of the options for sentimentLabel
         - only choose ONE of the options for biasLabel

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
-import { fetchMockArticles } from '../data/mockData'
 import './AnalyticsPage.css'
+import { API_BASE_URL } from '../lib/api';
 
 function AnalyticsPage() {
   const [timeRange, setTimeRange] = useState('All Time')
@@ -14,15 +14,52 @@ function AnalyticsPage() {
 
     const loadArticles = async () => {
       try {
-        const payload = await fetchMockArticles()
-        if (isMounted) setArticles(payload)
+
+        const articlesRes = await fetch(`${API_BASE_URL}/articles`)
+        if (!articlesRes.ok) {
+          throw new Error('Could not load articles.')
+        }
+
+        const data = await articlesRes.json()
+
+        const mappedArticles = (data.articles || []).map((article) => ({
+          id: article.id,
+          sourceName: article.source || "Unknown Source",
+          title: article.title || "Untitled Article",
+          summary:
+            article.explanation ||
+            (article.articleText
+              ? `${article.articleText.slice(0, 145).trimEnd()}...`
+              : ""),
+          publishDate: article.publicationDate
+            ? article.publicationDate.slice(0, 10)
+            : "",
+          coverImageUrl:
+            article.thumbnail ||
+            `https://picsum.photos/seed/${article.id}/640/420`,
+          isBookmarked: false,
+          status: "analyzed",
+          analysis: {
+            sentiment: {
+              label: article.sentimentLabel || "NEUTRAL",
+              score: article.sentimentScore ?? 0,
+            },
+            bias: {
+              label: article.biasLabel || "CENTER",
+              score: article.biasScore ?? 0,
+            },
+          },
+          originalArticle: article,
+        }));
+
+        if (isMounted) setArticles(mappedArticles)
+
       } catch (err) {
         if (isMounted) setError(err.message || 'Could not load articles.')
       } finally {
         if (isMounted) setLoading(false)
       }
     }
-
     loadArticles()
     return () => { isMounted = false }
   }, [])
@@ -36,9 +73,9 @@ function AnalyticsPage() {
     const now = new Date()
     let cutoff = null
 
-    if (timeRange === 'Past Week') cutoff = new Date(now - 7 * 24 * 60 * 60 * 1000)
-    else if (timeRange === 'Past Month') cutoff = new Date(now - 30 * 24 * 60 * 60 * 1000)
-    else if (timeRange === 'Past Year') cutoff = new Date(now - 365 * 24 * 60 * 60 * 1000)
+    if (timeRange === 'Past Week') cutoff = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
+    else if (timeRange === 'Past Month') cutoff = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000)
+    else if (timeRange === 'Past Year') cutoff = new Date(now.getTime() - 365 * 24 * 60 * 60 * 1000)
 
     return articles.filter(a => {
       if (a.status !== 'analyzed') return false
@@ -95,11 +132,11 @@ function AnalyticsPage() {
         </div>
         <div className="stat-row">
           <span className="stat-number">{avgBias > 0 ? `+${avgBias}` : avgBias}</span>
-          <span className="stat-label"> average bias</span>
+          <span className="stat-label"> average bias (-1 to 1)</span>
         </div>
         <div className="stat-row">
           <span className="stat-number">{avgSentiment > 0 ? `+${avgSentiment}` : avgSentiment}</span>
-          <span className="stat-label"> average sentiment</span>
+          <span className="stat-label"> average sentiment (-1 to 1)</span>
         </div>
       </div>
 
