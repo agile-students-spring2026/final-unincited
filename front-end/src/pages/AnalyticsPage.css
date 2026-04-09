@@ -45,6 +45,19 @@
   outline: none;
 }
 
+.source-filter-select {
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1.5px solid #e5e7eb;
+  background: white;
+  color: #111827;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  outline: none;
+}
+
 /* Quick stats card */
 .stats-card {
   background: white;
