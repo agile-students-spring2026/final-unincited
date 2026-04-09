@@ -30,7 +30,13 @@ function SignUpPage() {
       setSuccess('Account created. You can now log in.')
       setTimeout(() => navigate('/'), 700)
     } catch (err) {
-      setError(err.message)
+      if (err.message === 'User already exists') {
+        setError('An account with this email already exists')
+      } else if (err.message.includes('Failed to fetch')) {
+        setError('Unable to connect. Please try again.')
+      } else {
+        setError('Something went wrong. Please try again.')
+      }
     } finally {
       setLoading(false)
     }

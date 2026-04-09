@@ -73,6 +73,18 @@
   color: inherit;
   text-decoration: inherit;
 }
+.signup-status {
+    margin-top: 12px;
+    font-size: 14px;
+  }
+
+  .signup-error {
+    color: #b00020;
+  }
+
+  .signup-success {
+    color: #2e7d32;
+  }
 
 @media (min-width: 768px) {
   .signup-container {
@@ -95,3 +107,4 @@
     font-size: 0.95rem;
   }
 }
+
