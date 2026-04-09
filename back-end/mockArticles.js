@@ -60,7 +60,41 @@ const mockArticles = [
     ],
     submittedBy: 1,
     createdAt: new Date()
-  }
+  },
+  {
+  id: "entertainment-variety-001",
+  url: "https://variety.com/2026/film/news/streaming-fatigue-box-office-decline-1236000000/",
+  title: "Streaming Fatigue and Rising Costs Put Pressure on Hollywood Studios",
+  source: "variety",
+  author: "Brent Lang",
+  publicationDate: "2026-03-28",
+  thumbnail: "https://picsum.photos/seed/streamingfatigue/640/420",
+  articleText:
+    "Hollywood studios are facing mounting challenges as audiences grow weary of an oversaturated streaming market. Industry analysts point to declining box office numbers and rising production costs as warning signs for the entertainment sector. Executives are increasingly concerned that too many platforms and subscription fees are pushing viewers away, while fewer blockbuster hits are failing to offset losses.",
+  detectedTopic: "Entertainment",
+  sentimentLabel: "Negative",
+  sentimentScore: -0.6,
+  biasLabel: "Center",
+  biasScore: 0.1,
+  confidenceScore: 0.88,
+  explanation:
+    "The article uses cautious and negative language to describe industry challenges, focusing on declining performance and concerns from analysts without strong political framing.",
+  evidenceLines: [
+    {
+      highlight: "facing mounting challenges as audiences grow weary of an oversaturated streaming market",
+      startIndex: 30,
+      endIndex: 120
+    },
+    {
+      highlight: "declining box office numbers and rising production costs as warning signs",
+      startIndex: 140,
+      endIndex: 230
+    }
+  ],
+  submittedBy: "1",
+  createdAt: new Date()
+}
+  
 ]
 
 export default mockArticles

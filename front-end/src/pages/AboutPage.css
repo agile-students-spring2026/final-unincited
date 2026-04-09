@@ -34,7 +34,7 @@
 
 .about-mission,
 .about-methodology,
-.about-principles {
+.about-disclaimers {
   padding: 15px;
   background-color: var(--bg-soft);
   border-radius: var(--radius-soft);
@@ -43,26 +43,24 @@
 
 .mission-title,
 .methodology-title,
-.principles-title {
+.disclaimers-title {
+  display: block;
   padding-bottom: 6px;
   font-weight: 400;
   font-size: 0.95rem;
+  line-height: 1.2;
 }
 
 .mission-text,
-.methodology-text {
+.methodology-text, .disclaimers-text {
   font-size: 0.95rem;
   line-height: 1.55;
 }
-
-.principles-list {
-  margin: 0;
-  padding-left: 18px;
-  display: grid;
-  gap: 8px;
-  font-size: 0.95rem;
-  line-height: 1.4;
+.methodology-text p,
+.mission-text p, .disclaimers-text p{
+  margin: 0 0 10px 0;
 }
+
 
 .about-footer {
   margin-top: auto;
