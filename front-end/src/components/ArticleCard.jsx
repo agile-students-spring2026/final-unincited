@@ -1,5 +1,5 @@
 //article cards for dashboard and myarticles page
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import './ArticleCard.css'
 
@@ -18,6 +18,11 @@ function ArticleCard({
   onToggleSave
 }) {
   const [saved, setSaved] = useState(isBookmarked);
+
+  // Sync local star state when parent updates isBookmarked
+  useEffect(() => {
+    setSaved(isBookmarked)
+  }, [isBookmarked])
   const navigate = useNavigate();
 
   const handleClick = () => {
