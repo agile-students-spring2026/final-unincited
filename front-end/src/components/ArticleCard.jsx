@@ -19,7 +19,7 @@ function ArticleCard({
 }) {
   const [saved, setSaved] = useState(isBookmarked);
 
-  // sync local star state when parent updates isBookmarked
+  // Sync local star state when parent updates isBookmarked
   useEffect(() => {
     setSaved(isBookmarked)
   }, [isBookmarked])
