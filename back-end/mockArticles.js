@@ -19,12 +19,22 @@ const mockArticles = [
       "The article presents the Artemis II mission positively as an important milestone in space exploration and uses celebratory language around the released images.",
     evidenceLines: [
       {
+        quote: "NASA on Tuesday released striking new photos taken by the U.S.-Canadian crew.",
         highlight: "NASA on Tuesday released striking new photos taken by the U.S.-Canadian crew.",
+        taxonomyTag: "lexical-distortion",
+        taxonomyLabel: "Lexical Distortion",
+        colorHex: "#F7C9A3",
+        reason: "The adjective 'striking' adds evaluative emphasis beyond neutral event reporting.",
         startIndex: 96,
         endIndex: 173
       },
       {
+        quote: "The four astronauts channeled Apollo 8's famous Earthrise shot from 1968 with their own: Earthset, showing our planet setting behind the gray, pockmarked moon.",
         highlight: "The four astronauts channeled Apollo 8's famous Earthrise shot from 1968 with their own: Earthset, showing our planet setting behind the gray, pockmarked moon.",
+        taxonomyTag: "affective-manipulation",
+        taxonomyLabel: "Affective Manipulation",
+        colorHex: "#F4A7AF",
+        reason: "'Famous' and vivid scene framing increase emotional resonance in otherwise factual narration.",
         startIndex: 174,
         endIndex: 337
       }
@@ -50,10 +60,22 @@ const mockArticles = [
     explanation: "The article focuses on a positive and inspirational connection between a space mission and a science-themed film, highlighting achievements and optimism without political framing.",
     evidenceLines: [
       {
+        quote: "receiving strong praise as Artemis II astronauts prepare for their lunar mission",
+        highlight: "receiving strong praise as Artemis II astronauts prepare for their lunar mission",
+        taxonomyTag: "lexical-distortion",
+        taxonomyLabel: "Lexical Distortion",
+        colorHex: "#F7C9A3",
+        reason: "'Strong praise' is evaluative wording that frames audience sentiment positively.",
         startIndex: 91,
         endIndex: 170
       },
       {
+        quote: "calling the film inspirational and highlighting its message of perseverance and saving humanity",
+        highlight: "calling the film inspirational and highlighting its message of perseverance and saving humanity",
+        taxonomyTag: "affective-manipulation",
+        taxonomyLabel: "Affective Manipulation",
+        colorHex: "#F4A7AF",
+        reason: "Emotionally charged framing ('inspirational', 'saving humanity') directs reader response.",
         startIndex: 300,
         endIndex: 420
       }
@@ -81,12 +103,22 @@ const mockArticles = [
     "The article uses cautious and negative language to describe industry challenges, focusing on declining performance and concerns from analysts without strong political framing.",
   evidenceLines: [
     {
+      quote: "facing mounting challenges as audiences grow weary of an oversaturated streaming market",
       highlight: "facing mounting challenges as audiences grow weary of an oversaturated streaming market",
+      taxonomyTag: "affective-manipulation",
+      taxonomyLabel: "Affective Manipulation",
+      colorHex: "#F4A7AF",
+      reason: "Phrases like 'mounting challenges' and 'grow weary' intensify negative emotional tone.",
       startIndex: 30,
       endIndex: 120
     },
     {
+      quote: "declining box office numbers and rising production costs as warning signs",
       highlight: "declining box office numbers and rising production costs as warning signs",
+      taxonomyTag: "speculative-projection",
+      taxonomyLabel: "Speculative Projection",
+      colorHex: "#A9DCD4",
+      reason: "'Warning signs' projects future decline from current indicators without direct causal proof.",
       startIndex: 140,
       endIndex: 230
     }
