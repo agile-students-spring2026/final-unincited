@@ -1,10 +1,24 @@
 import 'dotenv/config'
 import OpenAI from 'openai'
 
-const client = new OpenAI({
-  apiKey: process.env.GROQ_API_KEY,
-  baseURL: 'https://api.groq.com/openai/v1'
-})
+let missingKeyWarned = false
+
+function getClient() {
+  const apiKey = process.env.GROQ_API_KEY || process.env.OPENAI_API_KEY
+
+  if (!apiKey) {
+    if (!missingKeyWarned) {
+      missingKeyWarned = true
+      console.warn('LLM disabled: set GROQ_API_KEY (or OPENAI_API_KEY) to enable article analysis.')
+    }
+    return null
+  }
+
+  return new OpenAI({
+    apiKey,
+    baseURL: 'https://api.groq.com/openai/v1'
+  })
+}
 
 export async function analyzeWithLLM(articleText){
     const prompt = `
@@ -48,6 +62,20 @@ export async function analyzeWithLLM(articleText){
         `
 
     try {
+      const client = getClient()
+      if (!client) {
+        return {
+          sentimentLabel: 'Unknown',
+          sentimentScore: 0,
+          biasLabel: 'Unknown',
+          detectedTopic: 'Unknown',
+          biasScore: 0,
+          confidenceScore: 0,
+          explanation: 'LLM credentials are not configured.',
+          evidenceLines: []
+        }
+      }
+
         const completion = await client.chat.completions.create({
             model: 'llama-3.1-8b-instant',
             temperature: 0,

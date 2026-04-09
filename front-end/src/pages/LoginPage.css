@@ -113,3 +113,22 @@
   height: 17px;
 }
 
+@media (min-width: 768px) {
+  .login-container {
+    padding: 56px 28px 112px;
+  }
+
+  .login-box {
+    max-width: 520px;
+    margin: 0 auto;
+    gap: 14px;
+  }
+
+  .login-input,
+  .login-button,
+  .signup-text,
+  .forgot-password {
+    font-size: 0.95rem;
+  }
+}
+

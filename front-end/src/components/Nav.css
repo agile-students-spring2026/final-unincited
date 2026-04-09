@@ -4,7 +4,7 @@
   left: 50%;
   transform: translateX(-50%);
   width: 100%;
-  max-width:420px;
+  max-width: var(--app-shell-width, 420px);
   display: flex;
   justify-content: space-around;
   align-items: center;
@@ -47,4 +47,14 @@
   height: 2px;
   transform: translateX(-50%);
   background: var(--accent);
+}
+
+@media (min-width: 768px) {
+  .bottom-nav {
+    padding: 10px 24px;
+  }
+
+  .nav-item {
+    padding: 8px 18px;
+  }
 }
