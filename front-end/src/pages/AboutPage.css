@@ -1,7 +1,13 @@
 .about-page {
   min-height: 100vh;
-  padding: 20px 16px 92px;
+  padding: 22px 16px 92px;
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.about-header {
   display: flex;
   flex-direction: column;
 }
@@ -18,24 +24,26 @@
   color: var(--accent-deep);
   text-transform: uppercase;
   letter-spacing: 0.07em;
-  margin-bottom: 20px;
 }
 
 .about-content {
   display: flex;
   flex-direction: column;
+  gap: 14px;
 }
 
 .about-mission,
-.about-methodology {
-  margin-bottom: 20px;
-  padding: 14px;
+.about-methodology,
+.about-principles {
+  padding: 15px;
   background-color: var(--bg-soft);
   border-radius: var(--radius-soft);
+  border: 1px solid rgba(136, 9, 20, 0.12);
 }
 
 .mission-title,
-.methodology-title {
+.methodology-title,
+.principles-title {
   padding-bottom: 6px;
   font-weight: 400;
   font-size: 0.95rem;
@@ -47,16 +55,63 @@
   line-height: 1.55;
 }
 
-.logout-button {
-  color: var(--white);
-  background: var(--accent);
+.principles-list {
+  margin: 0;
+  padding-left: 18px;
+  display: grid;
+  gap: 8px;
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+.about-footer {
+  margin-top: auto;
+  display: grid;
+  gap: 10px;
+}
+
+.about-button {
   border: none;
   padding: 11px 14px;
-  margin-top: auto;
-  font-size: 0.75rem;
-  letter-spacing: 0.04em;
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
   cursor: pointer;
   border-radius: var(--radius-soft);
+  transition: background-color 160ms ease, color 160ms ease;
+}
+
+.about-button-primary {
+  color: var(--white);
+  background: var(--accent);
+}
+
+.about-button-primary:hover {
+  background: var(--accent-deep);
+}
+
+.about-button-secondary {
+  color: var(--text-main);
+  background: var(--bg-muted);
+}
+
+.about-button-secondary:hover {
+  background: #e3d4bc;
+}
+
+
+@media (min-width: 768px) {
+  .about-page {
+    padding: 26px 18px 106px;
+  }
+
+  .about-content {
+    gap: 16px;
+  }
+
+  .about-footer {
+    grid-template-columns: 1fr 1fr;
+  }
 }
 
 

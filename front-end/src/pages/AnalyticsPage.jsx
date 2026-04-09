@@ -3,7 +3,8 @@ import { fetchMockArticles } from '../data/mockData'
 import './AnalyticsPage.css'
 
 function AnalyticsPage() {
-  const [timeRange, setTimeRange] = useState('Past Month')
+  const [timeRange, setTimeRange] = useState('All Time')
+  const [sourceFilter, setSourceFilter] = useState('All Sources')
   const [articles, setArticles] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -26,14 +27,33 @@ function AnalyticsPage() {
     return () => { isMounted = false }
   }, [])
 
-  const analyzed = useMemo(() => articles.filter(a => a.status === 'analyzed'), [articles])
+  const sources = useMemo(() => {
+    const unique = [...new Set(articles.map(a => a.sourceName).filter(Boolean))]
+    return unique.sort()
+  }, [articles])
 
-  const articlesCount = analyzed.length
-  const avgBias = analyzed.length
-    ? (analyzed.reduce((sum, a) => sum + a.analysis.bias.score, 0) / analyzed.length).toFixed(2)
+  const filtered = useMemo(() => {
+    const now = new Date()
+    let cutoff = null
+
+    if (timeRange === 'Past Week') cutoff = new Date(now - 7 * 24 * 60 * 60 * 1000)
+    else if (timeRange === 'Past Month') cutoff = new Date(now - 30 * 24 * 60 * 60 * 1000)
+    else if (timeRange === 'Past Year') cutoff = new Date(now - 365 * 24 * 60 * 60 * 1000)
+
+    return articles.filter(a => {
+      if (a.status !== 'analyzed') return false
+      if (cutoff && a.publishDate && new Date(a.publishDate) < cutoff) return false
+      if (sourceFilter !== 'All Sources' && a.sourceName !== sourceFilter) return false
+      return true
+    })
+  }, [articles, timeRange, sourceFilter])
+
+  const articlesCount = filtered.length
+  const avgBias = filtered.length
+    ? (filtered.reduce((sum, a) => sum + a.analysis.bias.score, 0) / filtered.length).toFixed(2)
     : 0
-  const avgSentiment = analyzed.length
-    ? (analyzed.reduce((sum, a) => sum + a.analysis.sentiment.score, 0) / analyzed.length).toFixed(2)
+  const avgSentiment = filtered.length
+    ? (filtered.reduce((sum, a) => sum + a.analysis.sentiment.score, 0) / filtered.length).toFixed(2)
     : 0
 
   return (
@@ -49,11 +69,21 @@ function AnalyticsPage() {
           value={timeRange}
           onChange={(e) => setTimeRange(e.target.value)}
         >
+          <option>All Time</option>
           <option>Past Week</option>
           <option>Past Month</option>
           <option>Past Year</option>
         </select>
       </div>
+
+      <select
+        className="source-filter-select"
+        value={sourceFilter}
+        onChange={(e) => setSourceFilter(e.target.value)}
+      >
+        <option>All Sources</option>
+        {sources.map(s => <option key={s}>{s}</option>)}
+      </select>
 
       {loading && <div className="analytics-status">Loading...</div>}
       {!loading && error && <div className="analytics-status">{error}</div>}
