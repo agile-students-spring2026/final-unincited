@@ -14,6 +14,7 @@ html, body {
 .app-container {
   --app-shell-width: 420px;
   width: 100%;
+  
   min-height: 100vh;
   background: var(--bg-surface);
   border-top: 2px solid var(--accent);
@@ -24,13 +25,14 @@ html, body {
 
 @media (min-width: 768px) {
   body {
-    background: linear-gradient(180deg, #bb081a 0%, #9f0c1e 48%, #85101f 100%);
-    padding: 24px;
+    background: var(--bg-surface);
+    
   }
 
   .app-container {
     --app-shell-width: 980px;
     min-height: calc(100vh - 48px);
+    max-width:420px;
     border-top: 0;
     border-radius: 14px;
     overflow: clip;
