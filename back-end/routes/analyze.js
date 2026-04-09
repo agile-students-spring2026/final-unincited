@@ -40,7 +40,7 @@ router.post('/',async(req,res)=>{
             id : crypto.randomUUID(),
             url,
             title: articleContent.title || metadata.title || title,
-            source: metadata.source,
+            source: metadata.source.slice(0,-4),
             author:metadata.author,
             publicationDate: metadata.publicationDate,
             thumbnail: metadata.thumbnail,

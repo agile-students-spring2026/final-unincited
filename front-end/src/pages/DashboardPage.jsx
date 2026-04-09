@@ -72,6 +72,9 @@ function DashboardPage() {
         const savedIds = new Set(
           (userData.savedArticles || []).map(a => String(a.id))
         )
+        articlesData.articles.sort((a, b) => {
+          return new Date(b.createdAt) - new Date(a.createdAt);
+        });
         
         //fix articles to match prev mock data structure
         const mappedArticles = (articlesData.articles || []).map((article) => ({
@@ -103,6 +106,8 @@ function DashboardPage() {
           },
           originalArticle: article,
         }));
+
+        
     
         if (isMounted) {
           setArticles(mappedArticles)
