@@ -35,6 +35,9 @@ function MyArticlesPage() {
       if (!response.ok) {
         throw new Error(data.message || 'Could not update saved articles.')
       }
+      data.savedArticles.sort((a, b) => {
+          return new Date(b.createdAt) - new Date(a.createdAt);
+      });
   
       setSavedArticlesState(data.savedArticles || [])
     } catch (err) {
@@ -56,6 +59,13 @@ function MyArticlesPage() {
         }
 
         if (isMounted) {
+
+          data.savedArticles.sort((a, b) => {
+          return new Date(b.createdAt) - new Date(a.createdAt);
+          });
+          data.submittedArticles.sort((a, b) => {
+          return new Date(b.createdAt) - new Date(a.createdAt);
+          });
           setSavedArticlesState(data.savedArticles || [])
           setSubmittedArticlesState(data.submittedArticles || [])
         }
