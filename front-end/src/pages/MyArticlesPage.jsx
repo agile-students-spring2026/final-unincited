@@ -18,7 +18,9 @@ function MyArticlesPage() {
         ? `${API_BASE_URL}/articles/unsave`
         : `${API_BASE_URL}/articles/save`
   
-      const articleToUpdate = savedArticlesState.find((article) => String(article.id) === String(articleId))
+      const articleToUpdate =
+        savedArticlesState.find((article) => String(article.id) === String(articleId)) ||
+        submittedArticlesState.find((article) => String(article.id) === String(articleId))
   
       const body = currentlySaved
         ? { userId: 1, articleId }
@@ -129,7 +131,7 @@ function MyArticlesPage() {
             sentiment={article.analysis?.sentiment?.label || article.sentimentLabel || 'N/A'}
             bias={article.analysis?.bias?.label || article.biasLabel || 'N/A'}
             thumbnail={article.coverImageUrl || article.thumbnail}
-            isBookmarked={activeTab === 'saved'}
+            isBookmarked={savedArticlesState.some(s => String(s.id) === String(article.id))}
             status={article.status}
             onToggleSave={handleToggleSave}
           />
