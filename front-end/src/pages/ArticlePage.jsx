@@ -149,8 +149,7 @@ export default function ArticlePage() {
     return parts
   }, [article])
 
-  const biasToSliderPosition = (score) => `${score * 100}%`
-  const sentimentToSliderPosition = (score) => `${((score + 1) / 2) * 100}%`
+  const toSliderPosition = (score) => `${((score + 1) / 2) * 100}%`
 
   if (loading) {
     return (
@@ -214,7 +213,7 @@ export default function ArticlePage() {
               <span
                 className="analysis-marker"
                 style={{
-                  left: biasToSliderPosition(article.analysis.bias.score),
+                  left: toSliderPosition(article.analysis.bias.score),
                 }}
               />
             </div>
@@ -232,7 +231,7 @@ export default function ArticlePage() {
               <span
                 className="analysis-marker"
                 style={{
-                  left: sentimentToSliderPosition(article.analysis.sentiment.score),
+                  left: toSliderPosition(article.analysis.sentiment.score),
                 }}
               />
             </div>

@@ -13,7 +13,7 @@ const mockArticles = [
     sentimentLabel: "Positive",
     sentimentScore: 0.8,
     biasLabel: "Center",
-    biasScore: 0.5,
+    biasScore: 0.1,
     confidenceScore: 0.9,
     explanation:
         "The article presents the Artemis II mission positively as an important milestone in space exploration and uses celebratory language around the released images.",
@@ -46,7 +46,7 @@ const mockArticles = [
   sentimentLabel: "Positive",
   sentimentScore: 0.7,
   biasLabel: "Center",
-  biasScore: 0.5,
+  biasScore: 0.1,
   confidenceScore: 0.9,
   explanation: "The article focuses on a positive and inspirational connection between a space mission and a science-themed film, highlighting achievements and optimism without political framing.",
 
