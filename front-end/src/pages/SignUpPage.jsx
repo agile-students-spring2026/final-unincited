@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { apiRequest } from '../lib/api'
+import './SignUpPage.css'
 
 function SignUpPage() {
   const navigate = useNavigate()
@@ -36,17 +37,35 @@ function SignUpPage() {
   }
 
   return (
-    <main>
-      <h1>Sign Up</h1>
-      <form onSubmit={onSubmit}>
+    <main className="signup-container">
+      <form className="signup-box" onSubmit={onSubmit}>
+        <h1 className="signup-title">Sign Up</h1>
+
         <label htmlFor="name">Name</label>
-        <input id="name" name="name" type="text" value={form.name} onChange={onChange} required />
+        <input
+          className="signup-input"
+          id="name"
+          name="name"
+          type="text"
+          value={form.name}
+          onChange={onChange}
+          required
+        />
 
         <label htmlFor="email">Email</label>
-        <input id="email" name="email" type="email" value={form.email} onChange={onChange} required />
+        <input
+          className="signup-input"
+          id="email"
+          name="email"
+          type="email"
+          value={form.email}
+          onChange={onChange}
+          required
+        />
 
         <label htmlFor="password">Password</label>
         <input
+          className="signup-input"
           id="password"
           name="password"
           type="password"
@@ -56,17 +75,20 @@ function SignUpPage() {
           required
         />
 
-        <button type="submit" disabled={loading}>
+        <button className="signup-button" type="submit" disabled={loading}>
           {loading ? 'Creating account...' : 'Create Account'}
         </button>
+
+        <p className="back-to-login">
+          Already have an account?{' '}
+          <Link className="back-to-login" to="/">
+            Log in
+          </Link>
+        </p>
       </form>
 
       {error ? <p>{error}</p> : null}
       {success ? <p>{success}</p> : null}
-
-      <p>
-        Already have an account? <Link to="/">Log in</Link>
-      </p>
     </main>
   )
 }

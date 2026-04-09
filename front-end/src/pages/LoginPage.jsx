@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { apiRequest } from '../lib/api'
+import './LoginPage.css'
 
 function LoginPage() {
   const navigate = useNavigate()
@@ -35,11 +36,11 @@ function LoginPage() {
   }
 
   return (
-    <main>
-      <h1>Login</h1>
-      <form onSubmit={onSubmit}>
+    <main className="login-container">
+      <form className="login-box" onSubmit={onSubmit}>
         <label htmlFor="email">Email</label>
         <input
+          className="login-input"
           id="email"
           name="email"
           type="email"
@@ -50,6 +51,7 @@ function LoginPage() {
 
         <label htmlFor="password">Password</label>
         <input
+          className="login-input"
           id="password"
           name="password"
           type="password"
@@ -58,19 +60,25 @@ function LoginPage() {
           required
         />
 
-        <button type="submit" disabled={loading}>
+        <button className="login-button" type="submit" disabled={loading}>
           {loading ? 'Logging in...' : 'Log In'}
         </button>
+
+        <p className="signup-text">
+          Need an account?{' '}
+          <Link className="signup-link" to="/signup">
+            Sign up
+          </Link>
+        </p>
+
+        <p className="forgot-password">
+          <Link className="forgot-password" to="/forgot-password">
+            Forgot password?
+          </Link>
+        </p>
       </form>
 
       {error ? <p>{error}</p> : null}
-
-      <p>
-        Need an account? <Link to="/signup">Sign up</Link>
-      </p>
-      <p>
-        <Link to="/forgot-password">Forgot password?</Link>
-      </p>
     </main>
   )
 }
