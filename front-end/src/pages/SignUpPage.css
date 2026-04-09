@@ -68,3 +68,30 @@
 .back-to-login:hover {
   color: var(--accent);
 }
+
+.back-to-login a {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+@media (min-width: 768px) {
+  .signup-container {
+    padding: 56px 28px 112px;
+  }
+
+  .signup-box {
+    max-width: 520px;
+    margin: 0 auto;
+    gap: 14px;
+  }
+
+  .signup-title {
+    font-size: 1.8rem;
+  }
+
+  .signup-input,
+  .signup-button,
+  .back-to-login {
+    font-size: 0.95rem;
+  }
+}
