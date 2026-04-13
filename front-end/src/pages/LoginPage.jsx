@@ -20,13 +20,11 @@ function LoginPage() {
     setLoading(true);
 
     try {
-      const data = await apiRequest("/auth/login", {
+      //login req
+      await apiRequest("/auth/login", {
         method: "POST",
         body: JSON.stringify(form),
       });
-
-      localStorage.setItem("authToken", data.token);
-      localStorage.setItem("currentUser", JSON.stringify(data.user));
       navigate("/dashboard");
     } catch (err) {
       if (err.message === "Invalid credentials") {
@@ -42,50 +40,56 @@ function LoginPage() {
   };
 
   return (
-    <main className="login-container">
+    <div className="login-container">
       <form className="login-box" onSubmit={onSubmit}>
-        <label htmlFor="email">Email</label>
-        <input
-          className="login-input"
-          id="email"
-          name="email"
-          type="email"
-          value={form.email}
-          onChange={onChange}
-          required
-        />
+        
+        <div className="login-title">Log In</div>
+        
 
-        <label htmlFor="password">Password</label>
-        <input
-          className="login-input"
-          id="password"
-          name="password"
-          type="password"
-          value={form.password}
-          onChange={onChange}
-          required
-        />
+        <div className="login-field">
+          <div className="login-label">Email</div>
+          <input
+            className="login-input"
+            name="email"
+            type="email"
+            value={form.email}
+            onChange={onChange}
+            required
+          />
+        </div>
 
-        <button className="login-button" type="submit" disabled={loading}>
+        <div className="login-field">
+          <div className="login-label">Password</div>
+          <input
+            className="login-input"
+            name="password"
+            type="password"
+            value={form.password}
+            onChange={onChange}
+            required
+          />
+        </div>
+
+        <button
+          className="login-button"
+          type="submit"
+          disabled={loading}
+        >
           {loading ? 'Logging in...' : 'Log In'}
         </button>
 
-        <p className="signup-text">
-          Need an account?{' '}
-          <Link className="signup-link" to="/signup">
-            Sign up
-          </Link>
-        </p>
+        {error && <div className="login-error">{error}</div>}
 
-        <p className="forgot-password">
-          <Link className="forgot-password" to="/forgot-password">
-            Forgot password?
-          </Link>
-        </p>
+        <div className="login-links">
+          <div>
+            <Link to="/signup">Sign up</Link>
+          </div>
+
+          
+        </div>
+
       </form>
-
-      {error ? <p>{error}</p> : null}
-    </main>
+    </div>
   )
 }
 

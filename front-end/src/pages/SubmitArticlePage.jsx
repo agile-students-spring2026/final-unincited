@@ -2,7 +2,7 @@
 import { useState } from 'react'
 import './SubmitArticlePage.css'
 import { useNavigate } from 'react-router-dom'
-import { API_BASE_URL } from '../lib/api'
+import { apiRequest } from '../lib/api'
 
 export default function SubmitArticlePage(){
     const navigate = useNavigate()
@@ -23,21 +23,22 @@ export default function SubmitArticlePage(){
         setLoading(true)
 
         try {
-            const response = await fetch(`${API_BASE_URL}/analyze`, {
+
+            const authData = await apiRequest('/auth/current-user')
+            const user = authData.user
+
+            if (!user) {
+                throw new Error('Not authenticated')
+            }
+
+            const data = await apiRequest(`/analyze`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                  userId: 1,
                   url,
                   title,
                 }),
             })
 
-            const data = await response.json()
-
-            if (!response.ok) {
-                throw new Error(data.error || data.message || 'Failed to analyze article')
-            }
 
             const analyzedTitle = data?.article?.title || title || url
 

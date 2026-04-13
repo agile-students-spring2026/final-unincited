@@ -5,95 +5,57 @@ import mockArticles from '../mockArticles.js'
 
 const router = express.Router()
 
+function getSessionUser(req, res) {
+  const sessionUser = req.session?.user
+
+  if (!sessionUser) {
+    res.status(401).json({ message: 'Not authenticated' })
+    return null
+  }
+
+  return sessionUser
+}
+
 // we returns all articles in the mock database (need to change later)
 router.get('/', (req, res) => {
   return res.status(200).json({ articles: mockArticles })
 })
 
-// returns the saved and submitted article lists user 
-router.get('/user/:userId', (req, res) => {
-  const userId = Number(req.params.userId)
-  const user = mockUsers.find((u) => u.id === userId)
+router.get('/me', (req, res) => {
+  const sessionUser = getSessionUser(req, res)
+  if (!sessionUser) return
+
+  const user = mockUsers.find((u) => u.id === Number(sessionUser.id))
 
   if (!user) {
     return res.status(404).json({
       message: 'User not found',
     })
   }
+  const submittedArticles = (user.submittedArticles || [])
+    .map((articleRef) => {
+      const articleId = articleRef
+      return mockArticles.find((article) => String(article.id) === String(articleId))
+    })
 
-  res.status(200).json({
+  return res.status(200).json({
     savedArticles: user.savedArticles,
-    submittedArticles: user.submittedArticles,
+    submittedArticles,
   })
 })
-
-// Submit articles post request, creates a new pending article, and is added to user array plus the global mockArticles list 
-router.post('/submit', (req, res) => {
-  const { userId, url, title } = req.body
-
-  // userId and url are required to create a submission (userId should be validated)
-  if (!userId || !url) {
-    return res.status(400).json({
-      message: 'userId and url are required',
-    })
-  }
-
-  // look up the user who is submitting the article
-  const user = mockUsers.find((u) => u.id === Number(userId))
-
-  if (!user) {
-    return res.status(404).json({
-      message: 'User not found',
-    })
-  }
-
-  // build the new article object in pending state.
-  // fields are not filled yet as /analyze route processes the article.
-  const newArticle = {
-    id: crypto.randomUUID(),
-    url,
-    title: title || url,
-    source: null,
-    author: null,
-    publicationDate: null,
-    thumbnail: null,
-    articleText: null,
-    status: 'pending',
-    detectedTopic: null,
-    sentimentLabel: null,
-    sentimentScore: null,
-    biasLabel: null,
-    biasScore: null,
-    confidenceScore: null,
-    explanation: null,
-    evidenceLines: [],
-    submittedBy: Number(userId),
-    createdAt: new Date(),
-  }
-
-  // add to the global articles list
-  mockArticles.push(newArticle)
-
-  // add to the users personal submitted articles list
-  user.submittedArticles.push(newArticle)
-
-  return res.status(201).json({
-    message: 'Article submitted successfully.',
-    article: newArticle,
-  })
-})
-
 
 router.post('/save', (req, res) => {
-  const { userId, article } = req.body
+  const sessionUser = getSessionUser(req, res)
+  if (!sessionUser) return
+  const { article } = req.body
 
-  if (!userId || !article) {
+  if (!article) {
     return res.status(400).json({
-      message: 'userId and article are required',
+      message: 'article is required',
     })
   }
 
-  const user = mockUsers.find((u) => u.id === Number(userId))
+  const user = mockUsers.find((u) => u.id === Number(sessionUser.id))
 
   if (!user) {
     return res.status(404).json({
@@ -123,15 +85,18 @@ router.post('/save', (req, res) => {
 
 // remove a saved article for a user
 router.post('/unsave', (req, res) => {
-  const { userId, articleId } = req.body
+  const sessionUser = getSessionUser(req, res)
+  if (!sessionUser) return
+  const { articleId } = req.body
 
-  if (!userId || !articleId) {
+
+  if (!articleId) {
     return res.status(400).json({
-      message: 'userId and articleId are required',
+      message: 'articleId are required',
     })
   }
 
-  const user = mockUsers.find((u) => u.id === Number(userId))
+  const user = mockUsers.find((u) => u.id === sessionUser.id)
 
   if (!user) {
     return res.status(404).json({

@@ -43,60 +43,68 @@ function SignUpPage() {
   }
 
   return (
-    <main className="signup-container">
-      <form className="signup-box" onSubmit={onSubmit}>
-        <h1 className="signup-title">Sign Up</h1>
+  <div className="signup-container">
+    <form className="signup-box" onSubmit={onSubmit}>
+      
+      <div className="signup-title">Sign Up</div>
 
-        <label htmlFor="name">Name</label>
+      <div className="signup-field">
+        <div className="signup-label">Name</div>
         <input
           className="signup-input"
-          id="name"
           name="name"
           type="text"
           value={form.name}
           onChange={onChange}
           required
         />
+      </div>
 
-        <label htmlFor="email">Email</label>
+      <div className="signup-field">
+        <div className="signup-label">Email</div>
         <input
           className="signup-input"
-          id="email"
           name="email"
           type="email"
           value={form.email}
           onChange={onChange}
           required
         />
+      </div>
 
-        <label htmlFor="password">Password</label>
+      <div className="signup-field">
+        <div className="signup-label">Password</div>
         <input
           className="signup-input"
-          id="password"
           name="password"
           type="password"
           value={form.password}
           onChange={onChange}
-          minLength={6}
+          minLength={6} //frontend validation
           required
         />
+      </div>
 
-        <button className="signup-button" type="submit" disabled={loading}>
-          {loading ? 'Creating account...' : 'Create Account'}
-        </button>
+      <button
+        className="signup-button"
+        type="submit"
+        disabled={loading}
+      >
+        {loading ? 'Creating account...' : 'Create Account'}
+      </button>
 
-        <p className="back-to-login">
-          Already have an account?{' '}
-          <Link className="back-to-login" to="/">
-            Log in
-          </Link>
-        </p>
-      </form>
+      {error && <div className="signup-error">{error}</div>}
+      {success && <div className="signup-success">{success}</div>}
 
-      {error ? <p>{error}</p> : null}
-      {success ? <p>{success}</p> : null}
-    </main>
-  )
+      <div className="back-to-login">
+  
+          <Link to="/" underline="none">Log in</Link>
+    
+      </div>
+
+    </form>
+  </div>
+)
 }
 
 export default SignUpPage

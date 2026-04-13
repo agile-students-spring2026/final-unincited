@@ -11,7 +11,6 @@
 src/
   components/      # Reusable UI components (Nav, ArticleCard)
   assets/          # Images and static assets
-  data/            # API utility functions for fetching mock data
   pages/           # Application pages (Login, Dashboard, Submit, etc.)
   App.jsx          # Routing and layout
   main.jsx         # Entry point

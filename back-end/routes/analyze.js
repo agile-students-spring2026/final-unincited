@@ -30,7 +30,12 @@ function getNormalizedHttpUrl(input) {
 
 router.post('/',async(req,res)=>{
     try {
-        const {userId, url, title} = req.body // from user submission
+        const {url, title} = req.body // from user submission
+
+        const sessionUser = req.session?.user
+        if (!sessionUser){
+            return res.status(401).json({ error: 'Not authenticated.' })
+        }
         if (!url) {
             return res.status(400).json({ error: 'URL is required.' })
         }
@@ -63,7 +68,6 @@ router.post('/',async(req,res)=>{
             throw new Error("Analysis failed")
         }
         
-
         const articleObject = {
             id : crypto.randomUUID(),
             url: normalizedUrl,
@@ -81,19 +85,20 @@ router.post('/',async(req,res)=>{
             confidenceScore: analysis?.confidenceScore||0,
             explanation: analysis?.explanation ||null,
             evidenceLines: addHighlights(articleText, analysis?.evidenceLines ||[]),
-            submittedBy: userId ||null,
+            submittedBy: sessionUser.id||null,
             createdAt: new Date()
         }
         
-        const user = mockUsers.find((u) => u.id === userId)
-        if (user){ //whole article for now, use id from db later
-            user.submittedArticles.push(articleObject)
+        const user = mockUsers.find((u) => u.id === sessionUser.id)
+        if (user){ 
+            user.submittedArticles.push(articleObject.id)
         }
         // add article to db later
         mockArticles.push(articleObject) 
         return res.status(200).json({
             message: 'Article analyzed successfully.',
-            article: articleObject
+            article: articleObject,
+            
         })
 
     }catch (e){
