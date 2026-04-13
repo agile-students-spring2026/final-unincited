@@ -103,8 +103,6 @@ This project uses Mocha + Chai for unit tests and c8 for coverage reporting.
 - Dynamic routes return mock JSON data for auth/articles/analyze flows.
 - Static routes return files from [back-end/public](back-end/public):
 	- `/`
-	- `/terms`
-	- `/privacy`
 - Front-end login, sign-up, forgot-password, dashboard, article pages, and submit flow call back-end routes.
 - Front-end forms POST to back-end routes:
 	- `/auth/login`

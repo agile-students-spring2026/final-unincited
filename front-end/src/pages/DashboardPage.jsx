@@ -23,7 +23,7 @@ function DashboardPage() {
         ? { articleId }
         : { article: articleToUpdate }
 
-      const data = await apiRequest(endpoint, {
+      await apiRequest(endpoint, {
         method: 'POST',
        
         body: JSON.stringify(body),
