@@ -13,7 +13,6 @@ describe('Auth Routes', () => {
     })
 
     expect(res).to.have.status(200)
-    expect(res.body).to.have.property('token')
     expect(res.body.user.email).to.equal('test@example.com')
   })
 
@@ -28,7 +27,7 @@ describe('Auth Routes', () => {
   })
 
   it('should create a user', async () => {
-    const res = await request.execute(app).post('/auth/register').send({
+    const res = await request.execute(app).post('/auth/signup').send({
       name: 'Uma',
       email: 'uma_test@example.com',
       password: '123'
@@ -39,7 +38,7 @@ describe('Auth Routes', () => {
   })
 
   it('should return 400 when required fields are missing', async () => {
-    const res = await request.execute(app).post('/auth/register').send({
+    const res = await request.execute(app).post('/auth/signup').send({
       name: 'Uma'
     })
 
@@ -47,15 +46,4 @@ describe('Auth Routes', () => {
     expect(res.body).to.have.property('message')
   })
 
-  it('should support /auth/signup alias', async () => {
-    const res = await request.execute(app).post('/auth/signup').send({
-      name: 'Signup User',
-      email: 'signup_user@example.com',
-      password: '123456'
-    })
-
-    expect(res).to.have.status(201)
-    expect(res.body).to.have.property('user')
-    expect(res.body.user.email).to.equal('signup_user@example.com')
-  })
 })

@@ -9,7 +9,7 @@ import {preprocessText, extractMetadata, extractArticleContent} from '../service
 import { analyzeWithLLM, addHighlights} from '../services/analyzeArticle.js'
 const router = express.Router()
 
-function getNormalizedHttpUrl(input) {
+export function getNormalizedHttpUrl(input) {
     if (!input || typeof input !== 'string') return null
 
     const trimmed = input.trim()
@@ -105,10 +105,10 @@ router.post('/',async(req,res)=>{
         console.log("error: ",e.message)
         console.error(e)
         //identify types of errors (blocked web scrapers, not found, to send to frontend)
-        if (e.response?.status === 403) {
-            return res.status(403).json({
-            error: 'This site blocked the scraper request.',
-            details: 'Try another article source like Reuters, NPR, or AP News.'
+        if (e.response?.status === 401 || e.response?.status === 403) {
+            return res.status(422).json({
+                error: 'This article source blocked access.',
+                details: 'Try another article source like NPR or AP News.'
             })
         }
         if (e.response?.status === 404) {
