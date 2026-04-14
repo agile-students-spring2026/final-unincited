@@ -2,17 +2,21 @@
   min-height: 100vh;
   display: flex;
   align-items: center;
+  justify-content: center;
   background-color: var(--bg-surface);
   padding: 42px 16px 92px;
+  box-sizing: border-box;
 }
 
 .signup-box {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 14px;
   width: 100%;
+  max-width: 520px;
   border-top: 2px solid var(--accent);
   padding-top: 16px;
+  box-sizing: border-box;
 }
 
 .signup-title {
@@ -20,8 +24,20 @@
   font-size: 1.45rem;
   font-weight: 700;
   margin-bottom: 6px;
+  color: var(--text-main);
 }
 
+
+.signup-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.signup-label {
+  font-size: 0.9rem;
+  color: var(--text-main);
+}
 .signup-input {
   width: 100%;
   padding: 12px 13px;
@@ -30,6 +46,8 @@
   border-bottom: 2px solid var(--accent-soft);
   color: var(--text-main);
   border-radius: 0;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease;
 }
 
 .signup-input:focus {
@@ -39,7 +57,7 @@
 
 .signup-input::placeholder {
   color: var(--text-muted);
-  font-size: 12px;
+  font-size: 0.8rem;
 }
 
 .signup-button {
@@ -51,60 +69,56 @@
   letter-spacing: 0.04em;
   cursor: pointer;
   border-radius: var(--radius-soft);
+  margin-top: 6px;
 }
 
 .signup-button:hover {
   background-color: var(--accent-deep);
 }
 
-.back-to-login {
+.signup-button:active {
+  transform: scale(0.98);
+}
+
+.signup-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.back-to-login div {
   text-align: center;
+  margin-top: 16px;
   font-size: 12px;
-  margin-top: 15px;
-  cursor: pointer;
+
+  color: var(--text-muted);
+  text-decoration: none;
+
+}
+
+.back-to-login div a {
+  margin-left: 4px;
+  text-decoration: none;
+  color: var(--text-main);
+  font-size: 12px;
+
+}
+
+.back-to-login div a:hover {
+  color: var(--accent);
   text-decoration: underline;
 }
 
-.back-to-login:hover {
-  color: var(--accent);
+.signup-error,
+.signup-success {
+  margin-top: 12px;
+  font-size: 0.9rem;
+  text-align: center;
 }
 
-.back-to-login a {
-  color: inherit;
-  text-decoration: inherit;
-}
-.signup-status {
-    margin-top: 12px;
-    font-size: 14px;
-  }
-
-  .signup-error {
-    color: #b00020;
-  }
-
-  .signup-success {
-    color: #2e7d32;
-  }
-
-@media (min-width: 768px) {
-  .signup-container {
-    padding: 56px 28px 112px;
-  }
-
-  .signup-box {
-    max-width: 520px;
-    margin: 0 auto;
-    gap: 14px;
-  }
-
-  .signup-title {
-    font-size: 1.8rem;
-  }
-
-  .signup-input,
-  .signup-button,
-  .back-to-login {
-    font-size: 0.95rem;
-  }
+.signup-error {
+  color: #b00020;
 }
 
+.signup-success {
+  color: #2e7d32;
+}

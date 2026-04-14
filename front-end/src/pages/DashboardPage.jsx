@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import './DashboardPage.css'
 import ArticleCard from "../components/ArticleCard";
-import { API_BASE_URL } from '../lib/api';
+import { apiRequest } from '../lib/api';
 
 function DashboardPage() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -12,28 +12,23 @@ function DashboardPage() {
   const handleToggleSave = async (articleId, currentlySaved) => {
     try {
       const endpoint = currentlySaved
-        ? `${API_BASE_URL}/articles/unsave`
-        : `${API_BASE_URL}/articles/save`
+        ? `/articles/unsave`
+        : `/articles/save`
 
       const articleToUpdate = articles.find(
         (a) => String(a.id) === String(articleId)
       )
 
       const body = currentlySaved
-        ? { userId: 1, articleId }
-        : { userId: 1, article: articleToUpdate }
+        ? { articleId }
+        : { article: articleToUpdate }
 
-      const response = await fetch(endpoint, {
+      await apiRequest(endpoint, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+       
         body: JSON.stringify(body),
       })
 
-      const data = await response.json()
-
-      if (!response.ok) {
-        throw new Error(data.message)
-      }
 
       setArticles((prev) =>
         prev.map((a) =>
@@ -52,22 +47,10 @@ function DashboardPage() {
 
     const loadArticles = async () => {
       try {
-        const [articlesRes, userRes] = await Promise.all([
-          fetch(`${API_BASE_URL}/articles`),
-          fetch(`${API_BASE_URL}/articles/user/1`),
+        const [articlesData, userData] = await Promise.all([
+          apiRequest(`/articles`),
+          apiRequest(`/articles/me`),
         ]);
-
-        const articlesData = await articlesRes.json();
-        const userData = await userRes.json();
-
-        //if req failed
-        if (!articlesRes.ok) {
-          throw new Error(articlesData.message || "Could not load articles.");
-        }
-
-        if (!userRes.ok) {
-          throw new Error(userData.message || "Could not load user articles.");
-        }
     
         const savedIds = new Set(
           (userData.savedArticles || []).map(a => String(a.id))

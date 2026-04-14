@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate, useParams} from 'react-router-dom'
 import './ArticlePage.css'
-import { API_BASE_URL } from '../lib/api'
+import { apiRequest } from '../lib/api'
 
 const HIGHLIGHT_META = {
   'affective-manipulation': { label: 'Affective Manipulation' },
@@ -18,35 +18,29 @@ const HIGHLIGHT_META = {
 
 export default function ArticlePage() {
   const navigate = useNavigate()
-  const { id } = useParams()
   const [article, setArticle] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [saved, setSaved] = useState(false)
 
+  const{ id }= useParams()
+
   const handleSaveArticle = async () => {
     try {
       const endpoint = saved
-        ? `${API_BASE_URL}/articles/unsave`
-        : `${API_BASE_URL}/articles/save`
+        ? `/articles/unsave`
+        : `/articles/save`
 
       const body = saved
-        ? { userId: 1, articleId: article.id }
-        : { userId: 1, article }
+        ? {  articleId: id }
+        : {  article }
 
-      const response = await fetch(endpoint, {
+      const data = await apiRequest(endpoint, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
       })
 
-      const data = await response.json()
-      console.log('save response', response.status, data)
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Failed to update saved article')
-      }
-
+    
       setSaved(!saved)
     } catch (err) {
       console.error(err)
@@ -59,9 +53,8 @@ export default function ArticlePage() {
 
     const loadArticle = async () => {
       try {
-        const articleRes =  await fetch(`${API_BASE_URL}/articles/${id}`)
+        const articleData =  await apiRequest(`/articles/${id}`)
 
-        const articleData = await articleRes.json()
 
         const raw = articleData?.article
         if (!raw) {
@@ -117,8 +110,7 @@ export default function ArticlePage() {
 
         setArticle(selectedArticle)
 
-        const res = await fetch(`${API_BASE_URL}/articles/user/1`)
-        const data = await res.json()
+        const data = await apiRequest(`/articles/me`)
 
         const isSaved = (data.savedArticles || []).some(
           (a) => String(a.id) === String(selectedArticle.id)

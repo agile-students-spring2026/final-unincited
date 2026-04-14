@@ -1,6 +1,8 @@
 import { expect } from 'chai'
 import { safeParseJSON, addHighlights } from '../services/analyzeArticle.js'
 import { preprocessText } from '../services/scrapeArticle.js'
+import {getNormalizedHttpUrl } from '../routes/analyze.js'
+
 
 
 describe('preprocessText', () => {
@@ -80,5 +82,40 @@ describe('addHighlights', () => {
     expect(result[0].startIndex).to.equal(0)
     expect(result[1].startIndex).to.equal(7)
     expect(result[2].startIndex).to.equal(14)
+  })
+})
+
+describe('getNormalizedHttpUrl', () => {
+  it('returns null for null input', () => {
+    expect(getNormalizedHttpUrl(null)).to.equal(null)
+  })
+
+  it('returns null for undefined input', () => {
+    expect(getNormalizedHttpUrl(undefined)).to.equal(null)
+  })
+
+  it('returns null for non-string input', () => {
+    expect(getNormalizedHttpUrl(123)).to.equal(null)
+    expect(getNormalizedHttpUrl({})).to.equal(null)
+    expect(getNormalizedHttpUrl([])).to.equal(null)
+  })
+
+  it('returns null for empty string', () => {
+    expect(getNormalizedHttpUrl('')).to.equal(null)
+    expect(getNormalizedHttpUrl('   ')).to.equal(null)
+  })
+
+  it('returns a normalized https URL', () => {
+    expect(getNormalizedHttpUrl('https://example.com')).to.equal('https://example.com/')
+  })
+
+  it('returns a normalized http URL', () => {
+    expect(getNormalizedHttpUrl('http://example.com/test')).to.equal('http://example.com/test')
+  })
+
+  it('trims surrounding whitespace', () => {
+    expect(getNormalizedHttpUrl('   https://example.com/test   ')).to.equal(
+      'https://example.com/test'
+    )
   })
 })

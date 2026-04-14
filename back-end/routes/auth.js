@@ -3,37 +3,9 @@ import mockUsers from '../mockUsers.js'
 
 const router = express.Router()
 
-router.post('/login', (req, res) => {
-  const { email, password } = req.body
 
-  if (!email || !password) {
-    return res.status(400).json({
-      message: 'Email and password are required',
-    })
-  }
-
-  const user = mockUsers.find(
-    (existingUser) => existingUser.email === email && existingUser.password === password
-  )
-
-  if (!user) {
-    return res.status(401).json({
-      message: 'Invalid credentials',
-    })
-  }
-
-  return res.status(200).json({
-    message: 'Login successful',
-    token: 'mock-jwt-token',
-    user: {
-      id: user.id,
-      name: user.name,
-      email: user.email,
-    },
-  })
-})
-
-const registerHandler = (req, res) => {
+//sign up route
+router.post('/signup', (req, res) => {
   const { name, email, password } = req.body
 
   if (!name || !email || !password) {
@@ -65,12 +37,79 @@ const registerHandler = (req, res) => {
     message: 'User created successfully',
     user: newUser,
   })
-}
+})
 
-router.post('/register', registerHandler)
-router.post('/signup', registerHandler)
+// log in existing user
+router.post('/login', (req, res) => {
+  const { email, password } = req.body
 
-router.post('/reset', (req, res) => {
+  if (!email || !password) {
+    return res.status(400).json({
+      message: 'Email and password are required',
+    })
+  }
+
+  const user = mockUsers.find(
+    (existingUser) => existingUser.email === email && existingUser.password === password
+  )
+
+  if (!user) {
+    return res.status(401).json({
+      message: 'Invalid credentials',
+    })
+  }
+  
+
+  req.session.regenerate((err) => {
+    if (err) {
+      return res.status(500).json({ message: 'Login failed' })
+    }
+
+    req.session.user = {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+    }
+
+    return res.status(200).json({
+      message: 'Login successful',
+      user: req.session.user,
+    })
+  })
+
+})
+
+// end user session
+router.post('/logout', (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      return res.status(500).json({ message: 'Logout failed' })
+    }
+
+    res.clearCookie('sid')
+    return res.status(200).json({ message: 'Logged out successfully' })
+  })
+})
+
+
+//for my articles page, gets current user with appropriate info
+router.get('/current-user', (req,res)=>{
+  if (!req.session.user) {
+    return res.status(401).json({ message: 'Not authenticated' })
+  }
+
+  return res.status(200).json({
+    user: req.session.user,
+  })
+
+})
+
+
+//TODO : reset functionality
+router.post('/forgot-password',(req, res) => {
+  res.json({ message: 'forgot' })
+})
+router.post('/reset-password', (req, res) => {
   res.json({ message: 'reset' })
 })
 

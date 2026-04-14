@@ -2,12 +2,14 @@ import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import ArticleCard from '../components/ArticleCard'
 import './MyArticlesPage.css'
-import { API_BASE_URL } from '../lib/api'
+import { apiRequest } from '../lib/api'
 
 function MyArticlesPage() {
   const [activeTab, setActiveTab] = useState('submitted')
   const [savedArticlesState, setSavedArticlesState] = useState([])
   const [submittedArticlesState, setSubmittedArticlesState] = useState([])
+  const [currentUser, setCurrentUser] = useState(null)
+
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const navigate = useNavigate()
@@ -15,29 +17,26 @@ function MyArticlesPage() {
 
   const handleToggleSave = async (articleId, currentlySaved) => {
     try {
+      if(!currentUser){
+        throw new Error('You must be logged in.')
+      }
       const endpoint = currentlySaved
-        ? `${API_BASE_URL}/articles/unsave`
-        : `${API_BASE_URL}/articles/save`
+        ? '/articles/unsave'
+        : '/articles/save'
   
       const articleToUpdate =
         savedArticlesState.find((article) => String(article.id) === String(articleId)) ||
         submittedArticlesState.find((article) => String(article.id) === String(articleId))
   
       const body = currentlySaved
-        ? { userId: 1, articleId }
-        : { userId: 1, article: articleToUpdate }
+        ? { articleId }
+        : { article: articleToUpdate }
   
-      const response = await fetch(endpoint, {
+      const data = await apiRequest(endpoint, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
       })
-  
-      const data = await response.json()
-  
-      if (!response.ok) {
-        throw new Error(data.message || 'Could not update saved articles.')
-      }
+
       data.savedArticles.sort((a, b) => {
           return new Date(b.createdAt) - new Date(a.createdAt);
       });
@@ -48,32 +47,46 @@ function MyArticlesPage() {
     }
   }
 
+  
   useEffect(() => {
     let isMounted = true
 
     // Fetch user's saved and submitted articles from backend
     const loadArticles = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/articles/user/1`)
-        const data = await response.json()
+        
+        const authData = await apiRequest('/auth/current-user')
+        const user = authData.user
 
-        if (!response.ok) {
-          throw new Error(data.message || 'Could not load articles.')
+        if (!user) {
+          throw new Error('Not authenticated')
         }
 
+        
         if (isMounted) {
-
-          data.savedArticles.sort((a, b) => {
-          return new Date(b.createdAt) - new Date(a.createdAt);
-          });
-          data.submittedArticles.sort((a, b) => {
-          return new Date(b.createdAt) - new Date(a.createdAt);
-          });
-          setSavedArticlesState(data.savedArticles || [])
-          setSubmittedArticlesState(data.submittedArticles || [])
+          setCurrentUser(user)
         }
+
+        //gets user submitted articles
+        const userData = await apiRequest(`/articles/me`)
+
+
+        userData.savedArticles.sort((a, b) => {
+        return new Date(b.createdAt) - new Date(a.createdAt);
+        });
+        userData.submittedArticles.sort((a, b) => {
+        return new Date(b.createdAt) - new Date(a.createdAt);
+        });
+        setSavedArticlesState(userData.savedArticles || [])
+        setSubmittedArticlesState(userData.submittedArticles || [])
+        
       } catch (err) {
         if (isMounted) {
+          if (err.message === 'Not authenticated') {
+            navigate('/')
+            return
+          }
+
           setError(err.message || 'Could not load articles.')
         }
       } finally {
@@ -88,7 +101,7 @@ function MyArticlesPage() {
     return () => {
       isMounted = false
     }
-  }, [])
+  }, [navigate])
 
   const submittedArticles = useMemo(
     () => submittedArticlesState,
