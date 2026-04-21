@@ -1,14 +1,20 @@
 import app from './app.js'
-const port = 3000
+import mongoose from 'mongoose'
+import dotenv  from 'dotenv'
 
-const listener = app.listen(port, function () {
-  console.log(`Server running on port: ${port}`)
-})
+dotenv.config()
 
-const close = () => {
-  listener.close()
-}
+const PORT = process.env.PORT || 3000
 
-export {
-    close
-}
+
+mongoose
+  .connect(process.env.MONGO_URI)
+  .then(() => {
+    console.log('Connected to MongoDB')
+    app.listen(PORT, () => {
+      console.log(`Server running on port: ${PORT}`)
+    })
+  })  
+  .catch((err) => {
+    console.error('MongoDB connection error:', err)
+  })
