@@ -1,20 +1,36 @@
+import 'dotenv/config'
 import app from './app.js'
-import mongoose from 'mongoose'
-import dotenv  from 'dotenv'
+import { connectDB, disconnectDB } from './config/db.js'
 
-dotenv.config()
+const port = process.env.PORT || 3000
+let listener
 
-const PORT = process.env.PORT || 3000
+const start = async () => {
+  try {
+    await connectDB()
 
-
-mongoose
-  .connect(process.env.MONGO_URI)
-  .then(() => {
-    console.log('Connected to MongoDB')
-    app.listen(PORT, () => {
-      console.log(`Server running on port: ${PORT}`)
+    listener = app.listen(port, function () {
+      console.log(`Server running on port: ${port}`)
     })
-  })  
-  .catch((err) => {
-    console.error('MongoDB connection error:', err)
-  })
+  } catch (error) {
+    console.error('Failed to start server:', error.message)
+    process.exit(1)
+  }
+}
+
+const close = async () => {
+  if (listener) {
+    await new Promise((resolve, reject) => {
+      listener.close((error) => {
+        if (error) return reject(error)
+        resolve()
+      })
+    })
+  }
+
+  await disconnectDB()
+}
+
+start()
+
+export { close }

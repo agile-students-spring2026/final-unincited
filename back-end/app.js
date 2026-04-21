@@ -1,3 +1,4 @@
+import 'dotenv/config'
 import express from 'express'
 import session from 'express-session'
 import cors from 'cors'
@@ -17,7 +18,7 @@ const publicDir = path.join(__dirname, 'public')
 app.use(
   session({
     name: 'sid', 
-    secret: 'dev-secret',
+    secret: process.env.SESSION_SECRET || 'dev-secret',
     resave: false,
     saveUninitialized: false,
     cookie: {
