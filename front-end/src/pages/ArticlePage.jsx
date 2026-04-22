@@ -31,9 +31,8 @@ export default function ArticlePage() {
         ? `/articles/unsave`
         : `/articles/save`
 
-      const body = saved
-        ? {  articleId: id }
-        : {  article }
+      const body = {  articleId: id }
+     
 
       const data = await apiRequest(endpoint, {
         method: 'POST',
@@ -63,13 +62,13 @@ export default function ArticlePage() {
         }
 
         const selectedArticle = {
-            id: raw.id,
+            id: raw._id,
             sourceName: raw.source || "Unknown Source",
             title: raw.title,
             author: raw.author,
             publishDate: raw.publicationDate?.slice(0, 10) || "",
             coverImageUrl:
-              raw.thumbnail || `https://picsum.photos/seed/${raw.id}/640/420`,
+              raw.thumbnail || `https://picsum.photos/seed/${raw._id}/640/420`,
             content: raw.articleText || "",
             highlights: Array.isArray(raw.evidenceLines)
               ? raw.evidenceLines.map((line) => {
@@ -113,7 +112,7 @@ export default function ArticlePage() {
         const data = await apiRequest(`/articles/me`)
 
         const isSaved = (data.savedArticles || []).some(
-          (a) => String(a.id) === String(selectedArticle.id)
+          (a) => String(a._id) === String(selectedArticle.id)
         )
 
         setSaved(isSaved)

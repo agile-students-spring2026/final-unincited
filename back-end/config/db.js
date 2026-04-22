@@ -1,6 +1,6 @@
 import mongoose from 'mongoose'
 
-export async function connectDB() {
+async function connectDB() {
   const mongoUri = process.env.MONGODB_URI
 
   if (!mongoUri) {
@@ -11,8 +11,13 @@ export async function connectDB() {
   console.log('MongoDB connected')
 }
 
-export async function disconnectDB() {
+async function disconnectDB() {
   if (mongoose.connection.readyState !== 0) {
     await mongoose.disconnect()
   }
+}
+
+export {
+  connectDB,
+  disconnectDB
 }

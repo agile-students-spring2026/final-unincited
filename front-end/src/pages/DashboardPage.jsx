@@ -15,13 +15,8 @@ function DashboardPage() {
         ? `/articles/unsave`
         : `/articles/save`
 
-      const articleToUpdate = articles.find(
-        (a) => String(a.id) === String(articleId)
-      )
-
-      const body = currentlySaved
-        ? { articleId }
-        : { article: articleToUpdate }
+      const body =  { articleId }
+      
 
       await apiRequest(endpoint, {
         method: 'POST',
@@ -53,7 +48,7 @@ function DashboardPage() {
         ]);
     
         const savedIds = new Set(
-          (userData.savedArticles || []).map(a => String(a.id))
+          (userData.savedArticles || []).map(a => String(a._id))
         )
         articlesData.articles.sort((a, b) => {
           return new Date(b.createdAt) - new Date(a.createdAt);
@@ -61,7 +56,7 @@ function DashboardPage() {
         
         //fix articles to match prev mock data structure
         const mappedArticles = (articlesData.articles || []).map((article) => ({
-          id: article.id,
+          id: article._id,
           sourceName: article.source || "Unknown Source",
           title: article.title || "Untitled Article",
           summary:
@@ -74,8 +69,8 @@ function DashboardPage() {
             : "",
           coverImageUrl:
             article.thumbnail ||
-            `https://picsum.photos/seed/${article.id}/640/420`,
-          isBookmarked: savedIds.has(String(article.id)),
+            `https://picsum.photos/seed/${article._id}/640/420`,
+          isBookmarked: savedIds.has(String(article._id)),
           status: "analyzed",
           analysis: {
             sentiment: {
@@ -89,8 +84,6 @@ function DashboardPage() {
           },
           originalArticle: article,
         }));
-
-        
     
         if (isMounted) {
           setArticles(mappedArticles)

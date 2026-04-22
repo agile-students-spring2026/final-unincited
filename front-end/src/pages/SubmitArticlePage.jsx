@@ -24,13 +24,6 @@ export default function SubmitArticlePage(){
 
         try {
 
-            const authData = await apiRequest('/auth/current-user')
-            const user = authData.user
-
-            if (!user) {
-                throw new Error('Not authenticated')
-            }
-
             const data = await apiRequest(`/analyze`, {
                 method: 'POST',
                 body: JSON.stringify({
@@ -48,7 +41,14 @@ export default function SubmitArticlePage(){
                 }
             })
         } catch (err) {
-            setError(err.message)
+
+            if (err.message === 'Invalid or expired token' || err.message === 'No token provided') {
+                setError('Please log in first.')
+                navigate('/')
+            }else{
+                setError(err.message || "Something went wrong.")
+            }
+            
         } finally {
             setLoading(false)
         }

@@ -1,8 +1,8 @@
 import express from 'express'
 import axios from 'axios'
-import crypto from 'crypto'
-import mockUsers from '../mockUsers.js'
-import mockArticles from '../mockArticles.js'
+import passport from 'passport'
+import User from '../models/User.js'
+import Article from '../models/Article.js' //from /models
 
 
 import {preprocessText, extractMetadata, extractArticleContent} from '../services/scrapeArticle.js'
@@ -28,14 +28,11 @@ export function getNormalizedHttpUrl(input) {
 }
 
 
-router.post('/',async(req,res)=>{
+router.post('/',passport.authenticate('jwt', { session: false }),async(req,res)=>{
     try {
         const {url, title} = req.body // from user submission
 
-        const sessionUser = req.session?.user
-        if (!sessionUser){
-            return res.status(401).json({ error: 'Not authenticated.' })
-        }
+        
         if (!url) {
             return res.status(400).json({ error: 'URL is required.' })
         }
@@ -68,8 +65,7 @@ router.post('/',async(req,res)=>{
             throw new Error("Analysis failed")
         }
         
-        const articleObject = {
-            id : crypto.randomUUID(),
+        const article = await new Article({
             url: normalizedUrl,
             title: articleContent.title || metadata.title || title,
             source: metadata.source.slice(0,-4),
@@ -85,19 +81,17 @@ router.post('/',async(req,res)=>{
             confidenceScore: analysis?.confidenceScore||0,
             explanation: analysis?.explanation ||null,
             evidenceLines: addHighlights(articleText, analysis?.evidenceLines ||[]),
-            submittedBy: sessionUser.id||null,
+            submittedBy: req.user._id||null,
             createdAt: new Date()
-        }
+        }).save();
         
-        const user = mockUsers.find((u) => u.id === sessionUser.id)
-        if (user){ 
-            user.submittedArticles.push(articleObject.id)
-        }
-        // add article to db later
-        mockArticles.push(articleObject) 
+        await User.findByIdAndUpdate(req.user._id, {
+            $push: { submittedArticles: article._id },
+        })
+
         return res.status(200).json({
             message: 'Article analyzed successfully.',
-            article: articleObject,
+            article: article,
             
         })
 
