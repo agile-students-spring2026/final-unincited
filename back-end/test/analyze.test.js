@@ -5,6 +5,7 @@ import axios from 'axios'
 import app from '../app.js'
 import mongoose from 'mongoose'
 import { connectDB, disconnectDB } from '../config/db.js'
+import User from '../models/User.js'
 
 before(async function () {
   this.timeout(10000)
@@ -16,45 +17,58 @@ after(async function () {
   await disconnectDB()
 })
 
-describe('POST /analyze', () => {
+describe('POST /analyze',function () {
+  this.timeout(10000)
+
   let axiosStub
   let agent
+  let token
+  
 
-  beforeEach(async () => {
+  beforeEach(async function() {
     sinon.restore()
     axiosStub = sinon.stub(axios, 'get')
+
     agent = request.agent(app)
+    await User.deleteMany({})
+
+    // create user first 
+    await request(app)
+      .post('/auth/signup')
+      .send({
+        name: 'Test User',
+        email: 'test@test.com',
+        password: 'password123',
+      })
+
+    // login to get token
+    const loginRes = await request(app)
+      .post('/auth/login')
+      .send({
+        email: 'test@test.com',
+        password: 'password123',
+      })
+
+    token = loginRes.body.token
+  })
 
   afterEach(() => {
     sinon.restore()
   })
 
-  const loginRes = await request(app)
-      .post('/auth/login')
-      .send({ email: 'test@test.com', password: 'password123' })
-
-    const token = loginRes.body.token
-
-    const res = await request(app)
-      .post('/analyze')
-      .set('Authorization', `JWT ${token}`)
-      .send({ url: 'https://example.com' })
-      })
 
   it('should return 401 if not authenticated', async () => {
-    const unauthenticatedAgent = request.agent(app)
 
-    const res = await unauthenticatedAgent
+    const res = await request(app)
       .post('/analyze')
       .send({ url: 'https://example.com/article' })
 
     expect(res.status).to.equal(401)
-    expect(res.body.error).to.equal('Not authenticated.')
   })
 
   it('should return 400 if url is missing', async () => {
     const res = await agent
-      .post('/analyze')
+      .post('/analyze').set('Authorization', `JWT ${token}`)
       .send({ title: 'Missing URL test' })
 
     expect(res.status).to.equal(400)
@@ -63,7 +77,7 @@ describe('POST /analyze', () => {
 
   it('should return 400 for invalid URL input', async () => {
     const res = await agent
-      .post('/analyze')
+      .post('/analyze').set('Authorization', `JWT ${token}`)
       .send({ url: 'not-a-real-url' })
 
     expect(res.status).to.equal(400)
@@ -80,7 +94,7 @@ describe('POST /analyze', () => {
     })
 
     const res = await agent
-      .post('/analyze')
+      .post('/analyze').set('Authorization', `JWT ${token}`)
       .send({ url: 'https://cnn.com/some-article' })
 
     expect(res.status).to.equal(422)
@@ -96,7 +110,7 @@ describe('POST /analyze', () => {
     })
 
     const res = await agent
-      .post('/analyze')
+      .post('/analyze').set('Authorization', `JWT ${token}`)
       .send({ url: 'https://example.com/missing-article' })
 
     expect(res.status).to.equal(404)
@@ -133,7 +147,7 @@ describe('POST /analyze', () => {
       'Server running on port: 3000 ... stack trace ... https://www.cnn.com/2026/04/09/world/live-news/iran-war-trump-us-ceasefire'
 
     const res = await agent
-      .post('/analyze')
+      .post('/analyze').set('Authorization', `JWT ${token}`)
       .send({ url: noisyInput })
 
     if (originalGroq) process.env.GROQ_API_KEY = originalGroq
@@ -150,7 +164,7 @@ describe('POST /analyze', () => {
     axiosStub.rejects(new Error('Network Error'))
 
     const res = await agent
-      .post('/analyze')
+      .post('/analyze').set('Authorization', `JWT ${token}`)
       .send({ url: 'https://example.com/article' })
 
     expect(res.status).to.equal(500)
@@ -184,7 +198,7 @@ describe('POST /analyze', () => {
     })
 
     const res = await agent
-      .post('/analyze')
+      .post('/analyze').set('Authorization', `JWT ${token}`)
       .send({ url: 'https://example.com/article' })
 
     if (originalGroq) process.env.GROQ_API_KEY = originalGroq

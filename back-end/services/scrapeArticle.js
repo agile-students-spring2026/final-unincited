@@ -8,6 +8,7 @@ export function preprocessText(text) {
     .replace(/\s+/g, ' ')
     .trim()
 }
+
 export function extractMetadata(html, url) { //webscrape title, author, publication date, thumbnail, source
     const $ = cheerio.load(html) 
 
