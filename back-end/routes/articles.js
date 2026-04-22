@@ -76,7 +76,7 @@ router.post('/save', passport.authenticate('jwt', { session: false }),async(req,
     })
   }
 
-  user.savedArticles.push(article._id)
+  user.savedArticles.push(articleId)
   await user.save()
   await user.populate('savedArticles')
 

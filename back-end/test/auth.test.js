@@ -1,6 +1,18 @@
 import * as chai from 'chai'
 import chaiHttp, { request } from 'chai-http'
 import app from '../app.js'
+import mongoose from 'mongoose'
+import { connectDB, disconnectDB } from '../config/db.js'
+
+before(async function () {
+  this.timeout(10000)
+  await connectDB()
+})
+
+after(async function () {
+  this.timeout(10000)
+  await disconnectDB()
+})
 
 const expect = chai.expect
 chai.use(chaiHttp)

@@ -3,6 +3,18 @@ import request from 'supertest'
 import sinon from 'sinon'
 import axios from 'axios'
 import app from '../app.js'
+import mongoose from 'mongoose'
+import { connectDB, disconnectDB } from '../config/db.js'
+
+before(async function () {
+  this.timeout(10000)
+  await connectDB()
+})
+
+after(async function () {
+  this.timeout(10000)
+  await disconnectDB()
+})
 
 describe('POST /analyze', () => {
   let axiosStub
@@ -13,21 +25,21 @@ describe('POST /analyze', () => {
     axiosStub = sinon.stub(axios, 'get')
     agent = request.agent(app)
 
-    await agent.post('/auth/signup').send({
-      name: 'Test User',
-      email: 'test@example.com',
-      password: 'password123',
-    })
-
-    await agent.post('/auth/login').send({
-      email: 'test@example.com',
-      password: 'password123',
-    })
-  })
-
   afterEach(() => {
     sinon.restore()
   })
+
+  const loginRes = await request(app)
+      .post('/auth/login')
+      .send({ email: 'test@test.com', password: 'password123' })
+
+    const token = loginRes.body.token
+
+    const res = await request(app)
+      .post('/analyze')
+      .set('Authorization', `JWT ${token}`)
+      .send({ url: 'https://example.com' })
+      })
 
   it('should return 401 if not authenticated', async () => {
     const unauthenticatedAgent = request.agent(app)
