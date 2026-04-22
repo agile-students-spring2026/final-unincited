@@ -25,6 +25,8 @@ function LoginPage() {
         method: "POST",
         body: JSON.stringify(form),
       });
+      localStorage.setItem('token', data.token)
+
       navigate("/dashboard");
     } catch (err) {
       if (err.message === "Invalid credentials") {

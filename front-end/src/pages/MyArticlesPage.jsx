@@ -8,7 +8,6 @@ function MyArticlesPage() {
   const [activeTab, setActiveTab] = useState('submitted')
   const [savedArticlesState, setSavedArticlesState] = useState([])
   const [submittedArticlesState, setSubmittedArticlesState] = useState([])
-  const [currentUser, setCurrentUser] = useState(null)
 
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -17,20 +16,14 @@ function MyArticlesPage() {
 
   const handleToggleSave = async (articleId, currentlySaved) => {
     try {
-      if(!currentUser){
-        throw new Error('You must be logged in.')
-      }
+      
       const endpoint = currentlySaved
         ? '/articles/unsave'
         : '/articles/save'
   
-      const articleToUpdate =
-        savedArticlesState.find((article) => String(article.id) === String(articleId)) ||
-        submittedArticlesState.find((article) => String(article.id) === String(articleId))
   
-      const body = currentlySaved
-        ? { articleId }
-        : { article: articleToUpdate }
+      const body =  { articleId }
+   
   
       const data = await apiRequest(endpoint, {
         method: 'POST',
@@ -54,23 +47,9 @@ function MyArticlesPage() {
     // Fetch user's saved and submitted articles from backend
     const loadArticles = async () => {
       try {
-        
-        const authData = await apiRequest('/auth/current-user')
-        const user = authData.user
-
-        if (!user) {
-          throw new Error('Not authenticated')
-        }
-
-        
-        if (isMounted) {
-          setCurrentUser(user)
-        }
 
         //gets user submitted articles
         const userData = await apiRequest(`/articles/me`)
-
-
         userData.savedArticles.sort((a, b) => {
         return new Date(b.createdAt) - new Date(a.createdAt);
         });
@@ -82,7 +61,7 @@ function MyArticlesPage() {
         
       } catch (err) {
         if (isMounted) {
-          if (err.message === 'Not authenticated') {
+          if (err.message === 'No token provided' || err.message === 'Invalid or expired token') {
             navigate('/')
             return
           }
@@ -146,8 +125,8 @@ function MyArticlesPage() {
         {!loading && error && <div>{error}</div>}
         {!loading && !error && displayedArticles.map(article => (
           <ArticleCard
-            key={article.id}
-            id={article.id}
+            key={article._id}
+            id={article._id}
             source={article.sourceName || article.source || 'Unknown Source'}
             title={article.title}
             summary={article.summary || article.explanation || article.articleText?.slice(0, 145) || ''}
@@ -155,7 +134,7 @@ function MyArticlesPage() {
             sentiment={article.analysis?.sentiment?.label || article.sentimentLabel || 'N/A'}
             bias={article.analysis?.bias?.label || article.biasLabel || 'N/A'}
             thumbnail={article.coverImageUrl || article.thumbnail}
-            isBookmarked={savedArticlesState.some(s => String(s.id) === String(article.id))}
+            isBookmarked={savedArticlesState.some(s => String(s._id) === String(article._id))}
             status={article.status}
             onToggleSave={handleToggleSave}
           />
