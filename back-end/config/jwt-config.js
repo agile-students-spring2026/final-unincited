@@ -1,9 +1,7 @@
 import mongoose from 'mongoose'
 const ObjectId = mongoose.Types.ObjectId
 
-// need to make models
 import User from '../models/User.js'
-
 import passportJWT from 'passport-jwt'
 
 const ExtractJwt = passportJWT.ExtractJwt
@@ -47,4 +45,4 @@ const jwtStrategy = jwtOptions => {
   return strategy
 }
 
-module.exports = jwtStrategy(jwtOptions, jwtVerifyToken)
+export default jwtStrategy(jwtOptions, jwtVerifyToken)

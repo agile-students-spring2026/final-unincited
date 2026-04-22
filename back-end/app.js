@@ -11,7 +11,6 @@ import jwt from'jsonwebtoken'
 import passport from 'passport'
 // use this JWT strategy within passport for authentication handling
 import jwtStrategy from './config/jwt-config.js' // import setup options for using JWT in passport
-import connectDB from './config/db.js'
 
 
 
