@@ -1,5 +1,5 @@
 import { expect } from 'chai'
-import { safeParseJSON, addHighlights } from '../services/analyzeArticle.js'
+import { safeParseJSON, addHighlights,normalizeEvidenceLines,  } from '../services/analyzeArticle.js'
 import { preprocessText } from '../services/scrapeArticle.js'
 import {getNormalizedHttpUrl } from '../routes/analyze.js'
 
@@ -118,4 +118,24 @@ describe('getNormalizedHttpUrl', () => {
       'https://example.com/test'
     )
   })
+})
+
+
+describe('normalizeEvidenceLines',()=>{
+  it('should return an empty array when evidenceLines is not an array', function () {
+    const result = normalizeEvidenceLines(null, 'Some article text here.')
+    expect(result).to.deep.equal([])
+  })
+
+
+  it('should normalize string entries into evidence line objects', function () {
+    const result = normalizeEvidenceLines(
+      ['outrageous'],
+      'The article calls the proposal outrageous in tone.'
+    )
+
+    expect(result[0].quote).to.equal('outrageous')
+    expect(result[0].taxonomyTag).to.equal('lexical-distortion')
+  })
+
 })

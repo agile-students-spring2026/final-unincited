@@ -13,8 +13,6 @@ import passport from 'passport'
 import jwtStrategy from './config/jwt-config.js' // import setup options for using JWT in passport
 
 
-
-
 const app = express()
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)

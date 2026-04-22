@@ -21,7 +21,7 @@ function LoginPage() {
 
     try {
       //login req
-      await apiRequest("/auth/login", {
+      const data = await apiRequest("/auth/login", {
         method: "POST",
         body: JSON.stringify(form),
       });

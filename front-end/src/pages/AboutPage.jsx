@@ -74,6 +74,7 @@ function AboutPage() {
         <button
           className="about-button about-button-primary"
           onClick={() => {
+            localStorage.removeItem('token')
             navigate('/')
           }}
         >

@@ -49,7 +49,7 @@ function SignUpPage() {
       <div className="signup-title">Sign Up</div>
 
       <div className="signup-field">
-        <div className="signup-label">Name</div>
+        <div className="signup-label">Username</div>
         <input
           className="signup-input"
           name="name"

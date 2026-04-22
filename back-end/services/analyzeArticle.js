@@ -258,14 +258,14 @@ export async function analyzeWithLLM(articleText){
 
 }
 
-function normalizeAnalysis(parsed = {}, articleText = '') {
+export function normalizeAnalysis(parsed = {}, articleText = '') {
   return {
     ...parsed,
     evidenceLines: normalizeEvidenceLines(parsed.evidenceLines, articleText)
   }
 }
 
-function normalizeEvidenceLines(evidenceLines = [], articleText = '') {
+export function normalizeEvidenceLines(evidenceLines = [], articleText = '') {
   if (!Array.isArray(evidenceLines)) return []
 
   const normalized = evidenceLines

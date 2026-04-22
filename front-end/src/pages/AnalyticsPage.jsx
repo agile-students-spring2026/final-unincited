@@ -3,7 +3,7 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
   ResponsiveContainer, ScatterChart, Scatter, ZAxis, Cell, ReferenceLine
 } from 'recharts'
-import { API_BASE_URL } from '../lib/api'
+import { apiRequest } from '../lib/api'
 import './AnalyticsPage.css'
 
 const avg = (arr) => arr.length ? arr.reduce((s, v) => s + v, 0) / arr.length : 0
@@ -39,9 +39,8 @@ function AnalyticsPage() {
 
     const loadArticles = async () => {
       try {
-        const res = await fetch(`${API_BASE_URL}/articles`)
-        if (!res.ok) throw new Error('Could not load articles.')
-        const data = await res.json()
+        const data = await apiRequest(`/articles`)
+        
         if (isMounted) setArticles(data.articles || [])
       } catch (err) {
         if (isMounted) setError(err.message || 'Could not load articles.')

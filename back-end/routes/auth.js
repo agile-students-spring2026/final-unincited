@@ -6,6 +6,7 @@ import User from '../models/User.js'
 const router = express.Router()
 
 
+
 //sign up route
 router.post('/signup', async(req, res) => {
 
@@ -42,7 +43,7 @@ router.post('/signup', async(req, res) => {
       console.error(`Failed to save user: ${err}`)
       res.status(500).json({
         success: false,
-        message: 'Error saving user to database.',
+        message: 'User already exists.',
         error: err,
       })
       return
@@ -84,7 +85,7 @@ router.post('/login', async(req, res) => {
       // user found and password is correct... send a success response
       console.log('User logged in successfully.')
       const token = user.generateJWT() // generate a signed token
-      res.json({
+      res.status(200).json({
         success: true,
         message: 'User logged in successfully.',
         token: token,

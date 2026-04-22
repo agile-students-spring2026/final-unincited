@@ -28,7 +28,7 @@ const jwtVerifyToken = async function (jwt_payload, next) {
   // try to find a matching user in our database
 
   // find this user in the database
-  const userId = ObjectId(jwt_payload.id) // convert the string id to an ObjectId
+  const userId = new ObjectId(jwt_payload.id) // convert the string id to an ObjectId
   const user = await User.findOne({ _id: userId }).exec()
   if (user) {
     // we found the user... keep going
