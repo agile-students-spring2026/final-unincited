@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Routes, Route, useLocation} from 'react-router
 import LoginPage from "./pages/LoginPage";
 import SignUpPage from "./pages/SignUpPage";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
+import ResetPasswordPage from './pages/ResetPasswordPage'
 import DashboardPage from './pages/DashboardPage'
 import AnalyticsPage from './pages/AnalyticsPage'
 import AboutPage from './pages/AboutPage'
@@ -13,7 +14,6 @@ import SubmitSuccessPage from './pages/SubmitSuccessPage'
 import ArticlePage from './pages/ArticlePage'
 
 import Nav from './components/Nav'
-
 
 function AppLayout() {
   const location = useLocation()
@@ -27,6 +27,8 @@ function AppLayout() {
         
         <Route path="/" element={<LoginPage />} />
         <Route path="/signup" element={<SignUpPage />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="/reset-password" element={<ResetPasswordPage />} />
         <Route path="/submit" element={<SubmitArticlePage />} />
         <Route path="/success" element={<SubmitSuccessPage />} />
         <Route path="/dashboard" element={<DashboardPage />} />
