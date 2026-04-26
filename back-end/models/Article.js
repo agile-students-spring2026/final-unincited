@@ -3,7 +3,7 @@ const Schema = mongoose.Schema
 
 const ArticleSchema = new Schema({ //TODO FILL IN Constraints
     url:{
-
+        
     },
     title:{
 
