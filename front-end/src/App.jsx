@@ -18,7 +18,7 @@ import Nav from './components/Nav'
 function AppLayout() {
   const location = useLocation()
 
-  const hideNavRoutes = ["/", "/signup"];
+  const hideNavRoutes = ["/", "/signup", "/forgot-password"];
   const hideNav = hideNavRoutes.includes(location.pathname);
   //need to create path for article detail page 
   return (

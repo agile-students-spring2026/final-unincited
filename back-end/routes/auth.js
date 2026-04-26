@@ -1,4 +1,5 @@
 import express from 'express'
+import { body, validationResult } from 'express-validator'
 
 //from /models
 import User from '../models/User.js'
@@ -8,15 +9,28 @@ const router = express.Router()
 
 
 //sign up route
-router.post('/signup', async(req, res) => {
+router.post('/signup', [
+    body('name')
+      .trim()
+      .notEmpty().withMessage('Name is required'),
+
+    body('email')
+      .notEmpty().withMessage('Valid email is required'),
+
+    body('password')
+      .isLength({ min: 6 }).withMessage('Password must be at least 6 characters long')
+  ],async(req, res) => {
+
+    const errors = validationResult(req)
+
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        message: 'Name, email, and password are required',
+        errors: errors.array()
+      })
+    }
 
   const { name, email, password } = req.body
-
-  if (!name || !email || !password) {
-    return res.status(400).json({
-      message: 'Name, email, and password are required',
-    })
-  }
 
 
   const existingUser = await User.findOne({email})
@@ -52,15 +66,22 @@ router.post('/signup', async(req, res) => {
 })
 
 // log in existing user
-router.post('/login', async(req, res) => {
-  const { email, password } = req.body
+router.post('/login',[
+    body('email')
+      .isEmail().withMessage('Valid email required'),
 
-  if (!email || !password) {
-    return res.status(400).json({
-      message: 'Email and password are required',
-    })
+    body('password')
+      .notEmpty().withMessage('Password is required')
+  ] ,async(req, res) => {
+
+  const errors = validationResult(req)
+
+      if (!errors.isEmpty()) {
+        return res.status(400).json({
+          errors: errors.array()
+        })
   }
-
+  const { email, password } = req.body
   //try to find user from database
   try {
       const user = await User.findOne({ email }).exec()

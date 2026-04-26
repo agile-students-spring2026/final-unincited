@@ -4,6 +4,10 @@
 ## Project Structure
 ```text
 back-end/
+
+  config/ 
+    db.js               #connect and disconnect from db configuration file
+    jwt-config.js       # set up jwt for authentication
   routes/               # API routes
     analyze.js          # LLM analysis call post request, adds to analyzed articles 
     articles.js         # CRUD articles in collection
@@ -11,6 +15,11 @@ back-end/
   services/
     analyzeArticle.js   # LLM prompting and post processing for output
     scrapeArticle.js    # web scrape article details from URL
+  models/               # schemas for article and user collections in database
+    Article.js
+    User.js
+  test/                 # testing files for backend routes and services
+  public/               # static files for testing backend connection
   app.js                # middleware and route mounting
   server.js             # starts the server
 ```
@@ -28,7 +37,9 @@ npm install
 3. Fill in your own values in `.env`:
 
 - `MONGODB_URI`: MongoDB Atlas connection string for the `unincited` database.
-- `SESSION_SECRET`: any long random string.
+- `MONGODB_URI_TEST` : Database for testing files
+- `JWT_SECRET` : JWT secret for authenticating users
+- `JWT_EXP_DAYS`: Token expiration
 - `CLIENT_URL`: front-end URL (default `http://localhost:5173`).
 - `PORT`: API port (default `3000`).
 

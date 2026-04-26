@@ -22,7 +22,7 @@ describe('Auth Routes', () => {
     const res = await request.execute(app).post('/auth/signup').send({
       name: 'Uma',
       email: 'uma_test@example.com',
-      password: '123'
+      password: '123456'
     })
 
     expect(res).to.have.status(200)
@@ -31,7 +31,7 @@ describe('Auth Routes', () => {
   it('should login an existing user', async () => {
     const res = await request.execute(app).post('/auth/login').send({
       email: 'uma_test@example.com',
-      password: '123'
+      password: '123456'
     })
 
     expect(res).to.have.status(200)
