@@ -51,7 +51,7 @@ From the project root:
 	 - `cd ../back-end`
 	 - `npm install`
 
-### 2) Environment variables (back-end)
+### 2) Environment variables
 
 Create a file at [back-end/.env](back-end/.env) with private values.
 
