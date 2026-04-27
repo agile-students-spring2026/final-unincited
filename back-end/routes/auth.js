@@ -1,6 +1,6 @@
 import express from 'express'
+import { body, validationResult } from 'express-validator'
 import crypto from 'crypto'
-
 //from /models
 import User from '../models/User.js'
 
@@ -120,42 +120,41 @@ router.post('/logout', (req, res) => {
 })
 
 
-// User submits email
 router.post('/forgot-password', async (req, res) => {
-  const {email} = req.body
-
-  if (!email) {
-    return res.status(400).json({success: false, message: 'Email is required'})
-  }
-
   try {
-    const user = await User.findOne({email})
-
-    if (!user) {
-      // Still return 200, we don't reveal email exists
-      return res.status(200).json({success:true, message: 'If that email is registered, a reset link has been sent.'})
+    const { email } = req.body
+    const user = await User.findOne({ email })
+    if(!user) {
+      return res.status(400).json({
+        message: 'No user with that email address exists.'
+      })
     }
-
-    // Generate a random token and hash before storing
-    const rawToken = crypto.randomBytes(32).toString('hex')
-    const hashedToken = crypto.createHash('sha256').update(rawToken).digest('hex')
-
-    user.resetPasswordToken = hashedToken
-    user.resetPasswordExpires = Date.now() + 3600000 // one hour
+    const token = crypto.randomBytes(32).toString('hex')
+    user.resetPasswordToken = token
+    user.resetPasswordExpires = Date.now() + 3600000 // 1 hour
     await user.save()
-
-    // In production we email user the link with the raw token but forn ow we just reutrn it directly
-    const resetLink = `http://localhost:5173/reset-password?token=${rawToken}&email=${email}`
-    console.log(`[DEV ONLY] Reset link: ${resetLink}`)
-
-    return res.status(200).json({
-      success: true,
-      message: 'Password reset link generated.',
-      resetLink, // in production we would not return this, but instead email it to the user
-    })
+    return res.status(200).json({ success: true, resetLink: `http://localhost:5173/reset-password?token=${token}&email=${email}` })
   } catch (err) {
-    console.error('Forgot password error:', err)
-    return res.status(500).json({success: false, message: 'Server error.', error: err})
+    return res.status(500).json({ message: 'Server error' })
+  }
+})
+
+router.post('/reset-password', async (req, res) => {
+  try {
+    const { token, newPassword } = req.body
+    const user = await User.findOne({ resetPasswordToken: token, resetPasswordExpires: { $gt: Date.now() }})
+    if(!user) {
+      return res.status(400).json({
+        message: 'Password reset token is invalid or has expired.'
+      })
+    }
+    user.password = newPassword
+    user.resetPasswordToken = undefined
+    user.resetPasswordExpires = undefined
+    await user.save()
+    return res.status(200).json({ success: true, message: 'Password has been reset successfully.' })
+  } catch (err) {
+    return res.status(500).json({ message: 'Server error' })  
   }
 })
 

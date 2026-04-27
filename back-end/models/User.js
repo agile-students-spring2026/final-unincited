@@ -33,8 +33,12 @@ const UserSchema = new Schema({
       ref: 'Article',
     },
   ],
-  resetPasswordToken:   {type: String, default: null},
-  resetPasswordExpires: {type: Date, default: null},
+  resetPasswordToken: {
+    type: String,
+  },
+  resetPasswordExpires: {
+    type: Date,
+  }
 })
 
 // hash the password before the user is saved
