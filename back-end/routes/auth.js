@@ -1,6 +1,6 @@
 import express from 'express'
 import { body, validationResult } from 'express-validator'
-
+import crypto from 'crypto'
 //from /models
 import User from '../models/User.js'
 
@@ -140,12 +140,42 @@ router.post('/logout', (req, res) => {
 })
 
 
-//TODO : reset functionality
-router.post('/forgot-password',(req, res) => {
-  res.json({ message: 'forgot' })
+router.post('/forgot-password', async (req, res) => {
+  try {
+    const { email } = req.body
+    const user = await User.findOne({ email })
+    if(!user) {
+      return res.status(400).json({
+        message: 'No user with that email address exists.'
+      })
+    }
+    const token = crypto.randomBytes(32).toString('hex')
+    user.resetPasswordToken = token
+    user.resetPasswordExpires = Date.now() + 3600000 // 1 hour
+    await user.save()
+    return res.status(200).json({ success: true, resetLink: `http://localhost:5173/reset-password?token=${token}&email=${email}` })
+  } catch (err) {
+    return res.status(500).json({ message: 'Server error' })
+  }
 })
-router.post('/reset-password', (req, res) => {
-  res.json({ message: 'reset' })
+
+router.post('/reset-password', async (req, res) => {
+  try {
+    const { token, newPassword } = req.body
+    const user = await User.findOne({ resetPasswordToken: token, resetPasswordExpires: { $gt: Date.now() }})
+    if(!user) {
+      return res.status(400).json({
+        message: 'Password reset token is invalid or has expired.'
+      })
+    }
+    user.password = newPassword
+    user.resetPasswordToken = undefined
+    user.resetPasswordExpires = undefined
+    await user.save()
+    return res.status(200).json({ success: true, message: 'Password has been reset successfully.' })
+  } catch (err) {
+    return res.status(500).json({ message: 'Server error' })  
+  }
 })
 
 export default router
