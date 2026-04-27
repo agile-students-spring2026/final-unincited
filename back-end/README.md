@@ -32,9 +32,7 @@ back-end/
 npm install
 ```
 
-2. Create a local environment file by copying `.env.example` to `.env`.
-
-3. Fill in your own values in `.env`:
+2. create .env file with filled in values for these variables:
 
 - `MONGODB_URI`: MongoDB Atlas connection string for the `unincited` database.
 - `MONGODB_URI_TEST` : Database for testing files
@@ -42,6 +40,7 @@ npm install
 - `JWT_EXP_DAYS`: Token expiration
 - `CLIENT_URL`: front-end URL (default `http://localhost:5173`).
 - `PORT`: API port (default `3000`).
+- `NODE_ENV` : set to 'dev' to run the development database, set to 'test' to run the test database
 
 4. Start the backend:
 
@@ -50,3 +49,15 @@ npm run dev
 ```
 
 When startup is successful, the server logs `MongoDB connected` and then the port message.
+
+## Testing
+
+To test back-end files:
+
+1. MUST set env variable `NODE_ENV=test` in an env file
+- this allows the test to use a separate database
+
+2. run command:
+```bash
+npm run test
+```

@@ -55,13 +55,14 @@ From the project root:
 
 Create a file at [back-end/.env](back-end/.env) with private values.
 
-Required for LLM-powered article analysis:
-
-- `GROQ_API_KEY=your_private_key_here`
-
-Optional:
-
-- `PORT=3000`
+- `GROQ_API_KEY` : Required for LLM-powered article analysis
+- `MONGODB_URI`: MongoDB Atlas connection string for the `unincited` database.
+- `MONGODB_URI_TEST` : Database for testing files
+- `JWT_SECRET` : JWT secret for authenticating users
+- `JWT_EXP_DAYS`: Token expiration
+- `CLIENT_URL`: front-end URL (default `http://localhost:5173`).
+- `PORT`: API port (default `3000`).
+- `NODE_ENV` : set to 'dev' to run the development database, set to 'test' to run the test database
 
 Do not commit `.env` files or secrets to version control.
 
@@ -87,13 +88,24 @@ App URLs:
 
 From [back-end](back-end):
 
-- `npm test`
+1. MUST set env variable `NODE_ENV=test` in an env file
+- this allows the test to use a separate database
+
+2. run command:
+```bash
+npm run test
+```
 
 ### 5) Run code coverage for back-end (c8)
 
 From [back-end](back-end):
 
-- `npm run coverage`
+1. MUST set env variable `NODE_ENV=test` in an env file
+- this allows the test to use a separate database
+2. Run command: 
+```bash 
+npm run coverage
+```
 
 This project uses Mocha + Chai for unit tests and c8 for coverage reporting.
 
