@@ -1,0 +1,40 @@
+services:
+  backend:
+    build: ./back-end
+    ports:
+      - "3000:3000"
+    environment:
+      PORT: 3000
+      MONGODB_URI: mongodb://mongo:27017/newsbias
+      JWT_SECRET: devsecret
+      JWT_EXP_DAYS: 60
+      NODE_ENV: development
+      CLIENT_URL: http://localhost:5173
+      GROQ_API_KEY: ${GROQ_API_KEY}
+    depends_on:
+      - mongo
+    volumes:
+      - ./back-end:/app
+      - /app/node_modules
+
+  frontend:
+    build: ./front-end
+    ports:
+      - "5173:5173"
+    environment:
+      VITE_API_BASE_URL: http://localhost:3000
+    depends_on:
+      - backend
+    volumes:
+      - ./front-end:/app
+      - /app/node_modules
+
+  mongo:
+    image: mongo:7
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+volumes:
+  mongo_data:
